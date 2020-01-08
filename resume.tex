@@ -1,0 +1,128 @@
+% ------------------------------------------------------
+% preamble
+% ------------------------------------------------------
+
+%%%
+% 【指定書式】
+%%%
+% ・A4用紙
+% ・2段組（段間隔5mm程度）
+% ・10.5ptあるいは11pt
+% ・上下25mm、左右20mm程度
+% ・45行、文字数は標準
+%%%
+\documentclass[10pt, twocolumn]{ltjsarticle}
+\usepackage[top=2.5truecm, bottom=2.5truecm, left=2truecm, right=2truecm]{geometry}
+\usepackage{luatexja-fontspec}
+\usepackage{luatexja}
+
+\setlength{\columnsep}{5mm}
+\pagestyle{empty}
+
+%%%
+% 【スタイル調整】
+%%%
+% ・タイトルの上につく余白をなくす
+% ・見出しの上下につく余白を0.5行分のサイズにする
+% ・表のキャプションの下につく余白を0.5行分のサイズにする
+% ・脚注番号の前にスターを付ける（e.g. *1）
+% ・箇条書きの行間を詰める
+% ・図のセンタリング
+% ・表のセンタリング
+% ・ハイパーリンク
+%%%
+\makeatletter
+\renewcommand{\@maketitle}{
+  \begin{center}
+    {\LARGE \@title \par}
+    \vskip 1.5em
+    {\large \lineskip .5em
+      \begin{tabular}[t]{c}
+        \@author
+      \end{tabular}
+      \par
+    }
+  \end{center}
+  \par
+  \vskip 1.5em
+}
+\makeatother
+
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+  {-2.0ex \@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus.2ex}%
+  {\normalfont\Large\bfseries}%
+}
+\renewcommand\subsection{\@startsection {subsection}{2}{\z@}%
+  {-2.0ex \@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus.2ex}%
+  {\normalfont\large\bfseries}%
+}
+\renewcommand\subsubsection{\@startsection {subsubsection}{3}{\z@}%
+  {-2.0ex \@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus.2ex}%
+  {\normalfont\normalsize\bfseries}%
+}
+\makeatother
+
+\renewcommand{\thefootnote}{*\arabic{footnote}}
+
+\let\oldenumerate\enumerate
+\renewcommand{\enumerate}{
+  \oldenumerate
+  \setlength{\itemsep}{0pt}
+  \setlength{\parskip}{0pt}
+}
+
+\let\olditemize\itemize
+\renewcommand{\itemize}{
+  \olditemize
+  \setlength{\itemsep}{0pt}
+  \setlength{\parskip}{0pt}
+}
+
+\let\oldtable\table
+\let\endoldtable\endtable
+\renewenvironment{table}{\oldtable}{
+  \centering
+  \endoldtable
+}
+
+% ------------------------------------------------------
+% custom font
+% ------------------------------------------------------
+
+\edef\currfileabsdir{\directlua{tex.sprint(lfs.currentdir())}/}
+\setmainjfont[
+  Path          = \currfileabsdir,
+  UprightFont   = fonts/KozMinPro-Regular.ttf,
+  BoldFont      = fonts/KozMinPro-Regular.ttf,
+]{KozMinPro-Regular}
+
+\setsansjfont[
+  Path          = \currfileabsdir,
+  UprightFont   = fonts/KozMinPro-Regular.ttf,
+  BoldFont      = fonts/KozMinPro-Regular.ttf,
+]{KozMinPro-Regular}
+
+
+% ------------------------------------------------------
+% body
+% ------------------------------------------------------
+
+\begin{document}
+
+\title{URLの情報指向型クラシフィケーション}
+\author{指導教員：井上 一成　発表者：E1533 西 総一朗}
+\maketitle
+\thispagestyle{empty}
+
+\section{はじめに}
+近年,ネットワーク上を流通するトラフィックは増加の一途を辿っている.
+従来のインターネットで利用されていたIPアドレスを識別子に用いるユーザとサーバ間のEnd-to-Endな通信を行うネットワークでは,ユーザからの通信要求が全て単一のサーバに集中することから,処理遅延やサーバダウンといった様々な問題を引き起こす\cite{bloom}.
+
+そこで,このような問題を解決するために研究されている技術の一つとして情報指向型ネットワーク:\ Information-Centric-Networking (ICN) \cite{icn}がある.
+情報指向型ネットワークとは,従来のIPネットワークのようにどのサーバからコンテンツを取得するかというロケーションオリエンテッドな通信ではなく,どのコンテンツを取得するかをコンテンツ名で指定し,コンテンツの発見と転送をコンテンツセントリックな方法で行う手法である.
+
+\end{document}

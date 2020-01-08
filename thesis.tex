@@ -1,0 +1,103 @@
+% ------------------------------------------------------
+% preamble
+% ------------------------------------------------------
+
+\documentclass[10pt]{ltjsarticle}
+\usepackage[top=2.5truecm, bottom=2.5truecm, left=2truecm, right=2truecm]{geometry}
+\usepackage{luatexja-fontspec}
+\usepackage{luatexja}
+
+\renewcommand{\thesection}{第\arabic{section}章}
+
+% ------------------------------------------------------
+% custom font
+% ------------------------------------------------------
+
+\edef\currfileabsdir{\directlua{tex.sprint(lfs.currentdir())}/}
+\setmainjfont[
+  Path          = \currfileabsdir,
+  UprightFont   = fonts/KozMinPro-Regular.ttf,
+  BoldFont      = fonts/KozMinPro-Regular.ttf,
+]{KozMinPro-Regular}
+
+\setsansjfont[
+  Path          = \currfileabsdir,
+  UprightFont   = fonts/KozMinPro-Regular.ttf,
+  BoldFont      = fonts/KozMinPro-Regular.ttf,
+]{KozMinPro-Regular}
+
+
+\begin{document}
+
+% ------------------------------------------------------
+% front cover
+% ------------------------------------------------------
+
+{\LARGE
+\vspace{1.0cm}
+\begin{center}
+  令和元年度卒業研究論文
+\end{center}}
+
+{\huge
+\vspace{1.0cm}
+\begin{center}
+  URLの情報指向型クラシフィケーション
+\end{center}}
+
+{\LARGE
+\vspace{13cm}
+\begin{center}
+  2020年2月7日(金)
+\end{center}
+
+\vspace{0.2cm}
+\begin{center}
+  \begin{tabular}{ccc}
+    指導教員 & 井上一成 & 教授
+  \end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+\begin{center}
+  明石工業高等専門学校 \\
+  電気情報工学科
+\end{center}
+
+\begin{center}
+  \begin{tabular}{crl}
+  報告者 & E1533 & 西 総一朗
+  \end{tabular}
+\end{center}}
+
+\thispagestyle{empty}
+
+\clearpage
+
+% ------------------------------------------------------
+% table of contents
+% ------------------------------------------------------
+
+\pagenumbering{roman}
+\tableofcontents
+
+\clearpage
+
+% ------------------------------------------------------
+% body
+% ------------------------------------------------------
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+
+\section{序章}
+\subsection{研究背景}
+近年,ネットワーク上を流通するトラフィックは増加の一途を辿っている.
+従来のインターネットで利用されていたIPアドレスを識別子に用いるユーザとサーバ間のEnd-to-Endな通信を行うネットワークでは,ユーザからの通信要求が全て単一のサーバに集中することから,処理遅延やサーバダウンといった様々な問題を引き起こす\cite{bloom}.
+
+そこで,このような問題を解決するために研究されている技術の一つとして情報指向型ネットワーク:\ Information-Centric-Networking (ICN) \cite{icn}がある.
+情報指向型ネットワークとは,従来のIPネットワークのようにどのサーバからコンテンツを取得するかというロケーションオリエンテッドな通信ではなく,どのコンテンツを取得するかをコンテンツ名で指定し,コンテンツの発見と転送をコンテンツセントリックな方法で行う手法である.
+\subsection{ICNの課題}
+
+\end{document}

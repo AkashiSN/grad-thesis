@@ -1,0 +1,9 @@
+#/fonts #!! to public mast ignore
+
+thesis.*
+!thesis.tex
+!thesis.pdf
+
+resume.*
+!resume.tex
+!resume.pdf
