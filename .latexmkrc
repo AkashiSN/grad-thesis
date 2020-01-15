@@ -1,9 +1,13 @@
 #!/usr/bin/env perl
-$lualatex                    = 'lualatex -halt-on-error -synctex=1 -shell-escape';
-$bibtex                      = 'pbibtex -kanji=utf8 %O %B';
-$biber                       = 'biber --bblencoding=utf8 -u -U --output_safechars';
-$makeindex                   = 'mendex %O -o %D %S';
-$max_repeat                  = 5;
-$pvc_view_file_via_temporary = 0;
-$pdf_mode                    = 4;
-$postscript_mode = $dvi_mode = 0;
+$latex     = 'uplatex %O -synctex=1 -halt-on-error -interaction=nonstopmode -shell-escape -file-line-error %S';
+$pdflatex  = 'pdflatex %O -synctex=1 -halt-on-error -interaction=nonstopmode -shell-escape -file-line-error %S';
+$lualatex  = 'lualatex %O -synctex=1 -halt-on-error -interaction=nonstopmode -shell-escape -file-line-error %S';
+$xelatex   = 'xelatex %O -synctex=1 -halt-on-error -interaction=nonstopmode -shell-escape -file-line-error  %S';
+$biber     = 'biber %O --bblencoding=utf8 -u -U --output_safechars %B';
+$bibtex    = 'upbibtex -kanji=utf8 %O %B';
+$makeindex = 'upmendex %O -o %D %S';
+$dvipdf    = 'dvipdfmx %O -o %D %S';
+$dvips     = 'dvips %O -z -f %S | convbkmk -u > %D';
+$ps2pdf    = 'ps2pdf %O %S %D';
+$pdf_mode  = 3;
+$out_dir   = "out"

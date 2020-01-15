@@ -11,10 +11,25 @@
 % ・上下25mm、左右20mm程度
 % ・45行、文字数は標準
 %%%
-\documentclass[10pt, twocolumn]{ltjsarticle}
-\usepackage[top=2.5truecm, bottom=2.5truecm, left=2truecm, right=2truecm]{geometry}
-\usepackage{luatexja-fontspec}
-\usepackage{luatexja}
+
+\documentclass[autodetect-engine, dvipdfmx-if-dvi, a4paper, ja=standard, 10pt, twocolumn]{bxjsarticle}
+
+\usepackage{ifthen}
+\usepackage{ifxetex,ifluatex,ifuptex}
+
+\ifthenelse{\boolean{xetex}}{
+  % XeLaTeXの時
+}{\ifthenelse{\boolean{luatex}}{
+  % LuaLaTeXの時
+  \usepackage{luatexja}
+  \usepackage{geometry}
+}{\ifthenelse{\boolean{upTeX}}{
+  % upLaTeXの時
+}{%else (pLaTeXと仮定する)
+  % pLaTeX の時
+}}}
+
+\setpagelayout*{top=2.5truecm, bottom=2.5truecm, left=2truecm, right=2truecm}
 
 \setlength{\columnsep}{5mm}
 \pagestyle{empty}
@@ -88,24 +103,6 @@
   \centering
   \endoldtable
 }
-
-% ------------------------------------------------------
-% custom font
-% ------------------------------------------------------
-
-\edef\currfileabsdir{\directlua{tex.sprint(lfs.currentdir())}/}
-\setmainjfont[
-  Path          = \currfileabsdir,
-  UprightFont   = fonts/KozMinPro-Regular.ttf,
-  BoldFont      = fonts/KozMinPro-Regular.ttf,
-]{KozMinPro-Regular}
-
-\setsansjfont[
-  Path          = \currfileabsdir,
-  UprightFont   = fonts/KozMinPro-Regular.ttf,
-  BoldFont      = fonts/KozMinPro-Regular.ttf,
-]{KozMinPro-Regular}
-
 
 % ------------------------------------------------------
 % body
