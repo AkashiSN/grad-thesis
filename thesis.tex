@@ -2,30 +2,25 @@
 % preamble
 % ------------------------------------------------------
 
-\documentclass[10pt]{ltjsarticle}
+\documentclass[autodetect-engine, dvipdfmx-if-dvi, a4paper, ja=standard, 10pt]{bxjsarticle}
+
+\usepackage{ifthen}
+\usepackage{ifxetex,ifluatex,ifuptex}
+
+\ifthenelse{\boolean{xetex}}{
+  % XeLaTeXの時
+}{\ifthenelse{\boolean{luatex}}{
+  % LuaLaTeXの時
+  \usepackage{luatexja}
+}{\ifthenelse{\boolean{upTeX}}{
+  % upLaTeXの時　
+}{%else (pLaTeXと仮定する)
+  % pLaTeX の時
+}}}
+
 \usepackage[top=2.5truecm, bottom=2.5truecm, left=2truecm, right=2truecm]{geometry}
-\usepackage{luatexja-fontspec}
-\usepackage{luatexja}
 
 \renewcommand{\thesection}{第\arabic{section}章}
-
-% ------------------------------------------------------
-% custom font
-% ------------------------------------------------------
-
-\edef\currfileabsdir{\directlua{tex.sprint(lfs.currentdir())}/}
-\setmainjfont[
-  Path          = \currfileabsdir,
-  UprightFont   = fonts/KozMinPro-Regular.ttf,
-  BoldFont      = fonts/KozMinPro-Regular.ttf,
-]{KozMinPro-Regular}
-
-\setsansjfont[
-  Path          = \currfileabsdir,
-  UprightFont   = fonts/KozMinPro-Regular.ttf,
-  BoldFont      = fonts/KozMinPro-Regular.ttf,
-]{KozMinPro-Regular}
-
 
 \begin{document}
 
@@ -50,20 +45,17 @@
 \begin{center}
   2020年2月7日(金)
 \end{center}
-
 \vspace{0.2cm}
 \begin{center}
   \begin{tabular}{ccc}
     指導教員 & 井上一成 & 教授
   \end{tabular}
 \end{center}
-
 \vspace{0.2cm}
 \begin{center}
   明石工業高等専門学校 \\
   電気情報工学科
 \end{center}
-
 \begin{center}
   \begin{tabular}{crl}
   報告者 & E1533 & 西 総一朗
