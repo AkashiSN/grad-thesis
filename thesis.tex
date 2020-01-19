@@ -12,14 +12,11 @@
 }{\ifthenelse{\boolean{luatex}}{
   % LuaLaTeXの時
   \usepackage{luatexja}
-  \usepackage{geometry}
 }{\ifthenelse{\boolean{upTeX}}{
   % upLaTeXの時
 }{%else (pLaTeXと仮定する)
   % pLaTeX の時
 }}}
-
-\setpagelayout*{top=2.5truecm, bottom=2.5truecm, left=2truecm, right=2truecm}
 
 \usepackage{url}
 
@@ -88,9 +85,8 @@
 1983年1月1日から今日のインターネットと呼ばれているネットワークにおいて通信プロトコルTCP/IPがデファクトスタンダードとなった\cite{Brief_History_of_the_Internet}.
 約20年前のインターネットのトラヒックや利用形態は現在とは大きく異なっている.
 1992年の全世界のインターネットトラフィックは1日あたり約100 GB,その10年後の2002年には1秒あたり100 GBに増え, 2017年には1秒あたり45,000 GB以上に到達した.
-また利用形態も約20年前は電子メール等のテキスト中心だったが, 2017年においてはトラヒックの75\%をビデオコンテンツが占めている.
+また利用形態も2017年においてはトラヒックの75\%をビデオコンテンツが占めている.
 Ciscoによると全世界のインターネットトラヒックは2022年には150,700 GB/秒となりその82\%をビデオコンテンツが占めると予測されている\cite{Cisco_Visual_Networking_Index}.
-
 
 TCP/IPではIPアドレスを識別子として通信を行っている.
 
@@ -107,4 +103,5 @@ TCP/IPではIPアドレスを識別子として通信を行っている.
 
 \bibliography{thesis}
 \bibliographystyle{junsrt}
+
 \end{document}
