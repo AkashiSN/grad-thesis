@@ -2,7 +2,7 @@
 % preamble
 % ------------------------------------------------------
 
-\documentclass[autodetect-engine, dvipdfmx-if-dvi, a4paper, ja=standard, 10pt]{bxjsarticle}
+\documentclass[autodetect-engine, dvipdfmx-if-dvi, a4paper, ja=standard, 10pt]{bxjsbook}
 
 \usepackage{ifthen}
 \usepackage{ifxetex,ifluatex,ifuptex}
@@ -21,7 +21,7 @@
 
 \setpagelayout*{top=2.5truecm, bottom=2.5truecm, left=2truecm, right=2truecm}
 
-\renewcommand{\thesection}{第\arabic{section}章}
+\usepackage{url}
 
 \begin{document}
 
@@ -83,14 +83,28 @@
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
+\chapter{序論}
+\section{TCP/IPの課題}
+1983年1月1日から今日のインターネットと呼ばれているネットワークにおいて通信プロトコルTCP/IPがデファクトスタンダードとなった\cite{Brief_History_of_the_Internet}.
+約20年前のインターネットのトラヒックや利用形態は現在とは大きく異なっている.
+1992年の全世界のインターネットトラフィックは1日あたり約100 GB,その10年後の2002年には1秒あたり100 GBに増え, 2017年には1秒あたり45,000 GB以上に到達した.
+また利用形態も約20年前は電子メール等のテキスト中心だったが, 2017年においてはトラヒックの75\%をビデオコンテンツが占めている.
+Ciscoによると全世界のインターネットトラヒックは2022年には150,700 GB/秒となりその82\%をビデオコンテンツが占めると予測されている\cite{Cisco_Visual_Networking_Index}.
 
-\section{序章}
-\subsection{研究背景}
-近年,ネットワーク上を流通するトラフィックは増加の一途を辿っている.
-従来のインターネットで利用されていたIPアドレスを識別子に用いるユーザとサーバ間のEnd-to-Endな通信を行うネットワークでは,ユーザからの通信要求が全て単一のサーバに集中することから,処理遅延やサーバダウンといった様々な問題を引き起こす\cite{bloom}.
 
-そこで,このような問題を解決するために研究されている技術の一つとして情報指向型ネットワーク:\ Information-Centric-Networking (ICN) \cite{icn}がある.
-情報指向型ネットワークとは,従来のIPネットワークのようにどのサーバからコンテンツを取得するかというロケーションオリエンテッドな通信ではなく,どのコンテンツを取得するかをコンテンツ名で指定し,コンテンツの発見と転送をコンテンツセントリックな方法で行う手法である.
-\subsection{ICNの課題}
+TCP/IPではIPアドレスを識別子として通信を行っている.
 
+\section{情報指向形ネットワーク}
+\section{本研究の目的}
+
+\chapter{シミュレーションプログラム}
+\section{プログラムの概要}
+
+\chapter{衝突数の検証}
+\section{ハッシュのみを用いたとき}
+\section{URLの分類手法を利用するとき}
+\section{ハッシュとURLの分類手法を併用したとき}
+
+\bibliography{thesis}
+\bibliographystyle{junsrt}
 \end{document}
