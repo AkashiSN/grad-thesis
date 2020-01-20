@@ -1,6 +1,7 @@
 thesis.*
 !thesis.tex
 !thesis.pdf
+!thesis.bib
 
 resume.*
 !resume.tex
