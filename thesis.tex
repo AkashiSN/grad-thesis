@@ -111,10 +111,12 @@ CDN\footnote{Content Delivery Network: 頻繁に使われるWebサイトがあ�
 そのコンテンツ要求を受け取った近隣のルータやノードが当該コンテンツを保持していた場合，それらはユーザに対してそのコンテンツを直接転送するプロトコル体系である．
 ICNにおいて情報を保持している者をパブリッシャ(Publisher)，情報の取得要求を出すものをサブスクライバ(Subscriber)と呼ぶ．
 またICNでは各コンテンツ(情報)に対してコンテンツ名(名前)が対応付けられている．
+
 ICNへのアプローチとして様々なが研究がなされているが，現在最も多くの研究者により研究されているNamed Data Networking (NDN)\cite{NDN} 及びその前身であるContent Centric Networking (CCN)\cite{CCN} を代表的なICNアーキテクチャとして述べる．
 CCNアーキテクチャはパロアルト研究所\footnote{Palo Alto Research Center (PARC) : アメリカ合衆国のカリフォルニア州パロアルトにある研究開発企業}により研究されているICNの先駆となった本格的なアーキテクチャである．
 また，US Future Internet Architectureプログラム\footnote{NSF FUTURE INTERNET ARCHITECTURE PROJECT (http://www.nets-fia.net/)}によって資金提供されたNDNプロジェクトは，CCNアーキテクチャをさらに発展させたものである．
 
+\paragraph{コンテンツ名}
 NDNにおけるコンテンツ名の命名規則は階層構造になっており，現在のインターネットで流通している識別子であるUniform-Resource-Locator (URL)に似ている．
 たとえば，コンテンツ名は\url{/aueb.gr/ai/main.html}となる．
 ただし，コンテンツ名は必ずしもURLとは一致せず，最初のセクション\footnote{"/"で区切られた部分をセクションと呼ぶ}はDNS名またはIPアドレスなどの形式である必要もない．
@@ -122,19 +124,29 @@ NDNにおけるコンテンツ名の命名規則は階層構造になってお�
 またコンテンツ取得要求において，要求されたコンテンツ名のプレフィックスの名前を持つ情報と一致すると見なされる．
 たとえば，\url{/aueb.gr/ai/main.html}は，\url{/aueb.gr}という名前の情報と一致する．
 
+\paragraph{名前解決とデータルーティング}
 NDNにおいて，サブスクライバはコンテンツを取得する際はコンテンツ取得要求であるINTERESTメッセージを発行して，パブリッシャからのDATAメッセージの形式で到着するコンテンツを取得する．
 INTEREST/DATAメッセージは，それぞれ要求/転送される情報のコンテンツ名を持つ．
-Fig.\ref{fig:ccn_ndn_routing}に示すように，すべてのメッセージはContent Router (CR)によってホップバイホップ(hop by hop)で転送され，
-各CRは3つのデータ構造(Forwarding Information Base (FIB), Pending Interest Table (PIT), Content Store (CS))がある．
+Fig\ref{fig:ccn_ndn_routing}に示すように，すべてのメッセージはContent Router (CR)によってホップバイホップ(hop by hop)で転送され，
+各CRには3つのデータ構造(Forwarding Information Base (FIB), Pending Interest Table (PIT), Content Store (CS))がある．
 FIBは，INTERESTメッセージを適切なデータソースに転送するために使用する必要がある出力インターフェイスにコンテンツ名をマッピングする．
-PITは，保留中のINTERESTメッセージが到着した着信インターフェイス，つまり一致するDATAメッセージが転送されてきたときに返送するインターフェースとコンテンツ名をマッピングすることでINTERESTメッセージを追跡する．
+PITは，保留中のINTERESTメッセージが到着した受信インターフェイス，つまり一致するDATAメッセージが転送されてきたときに返送するインターフェースとコンテンツ名をマッピングすることでINTERESTメッセージを追跡する．
 最後に，CSはCRを通過した情報のローカルキャッシュとして機能する.
 
-INTERESTが到着すると，CRは情報名を抽出し，要求されたプレフィックスと一致する名前を持つCSの情報オブジェクトを探します．
-何かが見つかった場合，すぐにデータメッセージで着信インターフェイスを介して送り返され，INTERESTは破棄されます．
-それ以外の場合，ルータは，このINTERESTを転送する方向を決定するために，FIBで最長のプレフィックス一致を実行します．
-FIBでエントリが見つかった場合，ルーターはPITにINTERESTの着信インターフェイスを記録し，FIBが示すCRにINTERESTをプッシュします． 図3では，サブスクライバーは/aueb.gr/ai/new.htmという名前のINTERESTを送信します（矢印1〜3）．
-PITに正確な名前のエントリがすでに含まれている場合，つまりこの正確な情報オブジェクトが既に要求されている場合，ルーターは着信インターフェイスをこのPITエントリに追加し，INTERESTを破棄して，情報オブジェクトのマルチキャストツリーを効果的に形成します．
+INTERESTメッセージが到着すると，CRはコンテンツ名を抽出し要求されたプレフィックスと一致する名前を持つCSの情報を探す．
+CSでキャッシュが見つかった場合，すぐにDATAメッセージとして受信インターフェイスを介して送返され，INTERESTメッセージは破棄される．
+それ以外の場合，CRはこのINTERESTメッセージを転送するインターフェースを決定するために，FIBで最長プレフィックス検索を実行する．
+FIBでエントリが見つかった場合，CRはPITにINTERESTメッセージの受信インターフェイスとコンテンツ名を記録し，FIBが示すCRにINTERESTメッセージを転送します．
+Fig\ref{fig:ccn_ndn_routing}では，サブスクライバは\url{/aueb.gr/ai/new.htm}という名前のINTERESTメッセージを送信する(矢印1〜3)．
+PITにコンテンツ名のエントリが既に含まれている場合，つまりこのコンテンツが既に要求されている場合，CRは受信インターフェイスをこのPITエントリに追加し，INTERESTメッセージを破棄する．
+
+要求されたコンテンツ名に一致するコンテンツがパブリッシャまたはCSで見つかった場合，INTERESTメッセージは破棄され，コンテンツはDATAメッセージとして返送される．
+このDATAメッセージは，PITで維持されている状態に基づいてホップバイホップ方式でサブスクライバに転送される．
+具体的には，CRはDATAメッセージを受信すると，対応するコンテンツをCSに保存し，次にPITで最長プレフィックス検索を実行して，DATAメッセージに一致するエントリを見つける．
+PITエントリに複数のインターフェイスがある場合，DATAメッセージが複製され，マルチキャスト配信が実現される．
+最後に，CRはDATAメッセージをこれらのインターフェイスに転送し，PITからエントリを削除する(矢印4〜6)．
+PITに一致するエントリがない場合，CRはDATAメッセージを重複データとして破棄する．
+NDNでは，DATAメッセージはINTERESTメッセージによってPITに残された経路に従うため，名前解決とデータルーティングは対称である．
 \begin{figure}[h]
   \center
   \includegraphics[width=140mm]{fig/CCN_NDN_Routing-crop.pdf}
