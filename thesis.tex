@@ -20,6 +20,11 @@
 
 \renewcommand{\figurename}{Fig}
 \usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs=true}
+\usepackage{siunitx}
 \usepackage{url}
 
 \begin{document}
@@ -109,7 +114,7 @@ CDN\footnote{Content Delivery Network: 頻繁に使われるWebサイトがあ�
 \section{情報指向ネットワーク}
 情報指向ネットワーク(ICN)においてユーザはサーバのIPアドレスではなくコンテンツ名を指定してコンテンツ取得要求を行い，
 そのコンテンツ要求を受け取った近隣のルータやノードが当該コンテンツを保持していた場合，それらはユーザに対してそのコンテンツを直接転送するプロトコル体系である．
-ICNにおいて情報を保持している者をパブリッシャ(Publisher)，情報の取得要求を出すものをSubscriber(Subscriber)と呼ぶ．
+ICNにおいて情報を保持している者をパブリッシャ(Publisher)，情報の取得要求を出すものをサブスクライバ(Subscriber)と呼ぶ．
 またICNでは各コンテンツ(情報)に対してコンテンツ名(名前)が対応付けられている．
 
 ICNへのアプローチとして様々なが研究がなされているが，現在最も多くの研究者により研究されているNamed Data Networking (NDN)\cite{NDN} 及びその前身であるContent Centric Networking (CCN)\cite{CCN} を代表的なICNアーキテクチャとして述べる．
@@ -122,7 +127,10 @@ NDNにおけるコンテンツ名の命名規則は階層構造になってお�
 ただし，コンテンツ名は必ずしもURLとは一致せず，最初のセクション\footnote{"/"で区切られた部分をセクションと呼ぶ}はDNS名またはIPアドレスなどの形式である必要もない．
 つまりNDNでは，各セクションについての具体的な規格は定義されていない．
 またコンテンツ取得要求において，要求されたコンテンツ名のプレフィックスの名前を持つ情報と一致すると見なされる．
-たとえば，\url{/aueb.gr/ai/main.html}は，\url{/aueb.gr}という名前の情報と一致する．
+たとえば，\url{/aueb.gr/ai/main.html/_v1/_s1}は\url{/aueb.gr/ai/main.html}という名前のコンテンツと一致する．
+これは要求されたコンテンツの初版であり，コンテンツを分割したセグメントの最初のデータを表している．
+このデータを受信したあとにSubscriberは\url{/aueb.gr/ai/main.html/_v1/_s2}により次のセグメントを要求することや，新たなバージョンを要求することもできる．
+このようにコンテンツを分割して扱う際にはコンテンツ名にそのメタデータを付与することが可能である．
 
 \paragraph{名前解決とデータルーティング}
 NDNにおいて，Subscriberはコンテンツを取得する際はコンテンツ取得要求であるINTERESTパケットを発行して，PublisherからのDATAパケットの形式で到着するコンテンツを取得する．
@@ -149,12 +157,26 @@ PITに一致するエントリがない場合，CRはDATAパケットを重複�
 NDNでは，DATAパケットはINTERESTパケットによってPITに残された経路に従うため，名前解決とデータルーティングは対称である\cite{A_Survey_of_Information-Centric_Networking_Research}．
 \begin{figure}[h]
   \center
-  \includegraphics[width=140mm]{fig/CCN_NDN_Routing-crop.pdf}
+  \includegraphics[width=145mm]{fig/CCN_NDN_Routing-crop.pdf}
   \caption{The CCN/NDN architecture．CR stands for Content Router, FIB for Forwarding Information Base, PIT for Pending Interest Table, CS for Content Store (Excerpt from \cite{A_Survey_of_Information-Centric_Networking_Research})．}
   \label{fig:ccn_ndn_routing}
 \end{figure}
 
+\paragraph{ICNの現状}
+ICNにおけるContents Router (CR)は未だに研究段階にありソフトウェアとして参照実装\footnote{Cefore: \url{https://cefore.net/} NICTにより開発されたCCNx準拠のTCP/IP上でCCNパケットをシミュレートするソフトウェアルータ}はあるが，ハードウェアとして実装されたものはない．
+ハードウェア実装に向けた課題は，TCP/IPにおけるIPアドレスの代わりにコンテンツ名を用いて名前解決とルーティングを行うためCRでの処理や，各テーブルに必要な記憶容量も増加するという点である．
+
 \section{本研究の目的}
+上記課題を解決するためにコンテンツ名に対してハッシュを用いたり，各テーブルにおいて新たなデータ構造を考案することである．
+
+\paragraph{想定するハードウェアアーキテクチャ及びネットワーク}
+NetFPGA SUME\footnote{\url{https://netfpga.org/site/#/systems/1netfpga-sume/details/}}の利用を前提として，まず10Gbps,平均パケットサイズ800 Byteの場合ボトルネックの許容平均処理遅延を求める．
+
+許容できるボトルネックの平均処理遅延$t\ [\mathrm{sec/packet}]$は，パケットあたりの(見かけの)処理時間と考えられる．
+これは，目標とするスループット$v\ [\mathrm{bit/sec}]$，平均パケットサイズを$s\ [\mathrm{bit/packet}]$とすると，$t=s/v$で表される．
+ここにパラメータ$v=10\ \mathrm{Gbps}=10^{10}\ [\mathrm{bit/sec}],\ s=800\ [\mathrm{Byte}] = 6400\ [\mathrm{bit}]$を当てはめると，
+$t=6400/10^{10}=640\times 10^{-9}\ [\mathrm{sec/packet}]$であり，許容平均処理遅延は$640\ [\si{\nano\second}]$となる．
+
 
 \chapter{シミュレーションプログラム}
 \section{プログラムの概要}
