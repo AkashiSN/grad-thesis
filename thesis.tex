@@ -155,6 +155,14 @@ PITエントリに複数のインターフェイスがある場合，DATAパケ�
 最後に，CRはDATAパケットをこれらのインターフェイスに転送し，PITからエントリを削除する(矢印4〜6)．
 PITに一致するエントリがない場合，CRはDATAパケットを重複データとして破棄する．
 NDNでは，DATAパケットはINTERESTパケットによってPITに残された経路に従うため，名前解決とデータルーティングは対称である\cite{A_Survey_of_Information-Centric_Networking_Research}．
+
+\section{本研究の目的}
+ICNにおけるContents Router (CR)は未だに研究段階にありソフトウェアとして参照実装\footnote{Cefore: \url{https://cefore.net/} NICTにより開発されたCCNx準拠のTCP/IP上でCCNパケットをシミュレートするソフトウェアルータ}はあるが，ハードウェアとして実装されたものはない．
+ICNの実現化のたに，ソフトウェア実装では遅延が発生してしまい，高速な通信を行うことが出来なくなってしまうのでハードウェアによる実装が不可欠である．
+ハードウェア実装に向けた課題として，TCP/IPにおけるIPアドレスの代わりにコンテンツ名を用いて名前解決とルーティングを行うためCRでの処理が複雑であり，各テーブルに必要な記憶容量も増加するという点が挙げられる．
+この問題を解決するためにコンテンツ名に対してハッシュ化を行うことによりルーティングに用いる識別子を圧縮したり，各テーブルにおいて新たなデータ構造による検索手法などが研究されている\cite{saino2013hash}\cite{bloom_filter}．
+ハッシュを用いることで異なるコンテンツ名にも関わらず同一のハッシュを出力してしまうことがある．
+
 \begin{figure}[h]
   \center
   \includegraphics[width=145mm]{fig/CCN_NDN_Routing-crop.pdf}
@@ -162,24 +170,9 @@ NDNでは，DATAパケットはINTERESTパケットによってPITに残され�
   \label{fig:ccn_ndn_routing}
 \end{figure}
 
-\paragraph{ICNの現状}
-ICNにおけるContents Router (CR)は未だに研究段階にありソフトウェアとして参照実装\footnote{Cefore: \url{https://cefore.net/} NICTにより開発されたCCNx準拠のTCP/IP上でCCNパケットをシミュレートするソフトウェアルータ}はあるが，ハードウェアとして実装されたものはない．
-ハードウェア実装に向けた課題は，TCP/IPにおけるIPアドレスの代わりにコンテンツ名を用いて名前解決とルーティングを行うためCRでの処理や，各テーブルに必要な記憶容量も増加するという点である．
-
-\section{本研究の目的}
-上記課題を解決するためにコンテンツ名に対してハッシュを用いたり，各テーブルにおいて新たなデータ構造を考案することである．
-
-\paragraph{想定するハードウェアアーキテクチャ及びネットワーク}
-NetFPGA SUME\footnote{\url{https://netfpga.org/site/#/systems/1netfpga-sume/details/}}の利用を前提として，まず10Gbps,平均パケットサイズ800 Byteの場合ボトルネックの許容平均処理遅延を求める．
-
-許容できるボトルネックの平均処理遅延$t\ [\mathrm{sec/packet}]$は，パケットあたりの(見かけの)処理時間と考えられる．
-これは，目標とするスループット$v\ [\mathrm{bit/sec}]$，平均パケットサイズを$s\ [\mathrm{bit/packet}]$とすると，$t=s/v$で表される．
-ここにパラメータ$v=10\ \mathrm{Gbps}=10^{10}\ [\mathrm{bit/sec}],\ s=800\ [\mathrm{Byte}] = 6400\ [\mathrm{bit}]$を当てはめると，
-$t=6400/10^{10}=640\times 10^{-9}\ [\mathrm{sec/packet}]$であり，許容平均処理遅延は$640\ [\si{\nano\second}]$となる．
-
-
 \chapter{シミュレーションプログラム}
 \section{プログラムの概要}
+
 
 \chapter{衝突数の検証}
 \section{ハッシュのみを用いたとき}
