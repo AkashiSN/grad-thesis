@@ -27,6 +27,7 @@
 \mathtoolsset{showonlyrefs=true}
 \usepackage{siunitx}
 \usepackage{booktabs}
+\usepackage{fancyvrb}
 \usepackage{url}
 
 \begin{document}
@@ -172,31 +173,91 @@ ICNの実用化を行うため，CRのハードウェアによる実装が不可
 コンテンツ名はランダムな文字列ではなくある程度自然言語的な規則があるのでそれを用いることで軽量化を図る．
 
 \begin{figure}[h]
-  \center
+  \centering
   \includegraphics[width=145mm]{fig/CCN_NDN_Routing-crop.pdf}
   \caption{The CCN/NDN architecture．CR stands for Content Router, FIB for Forwarding Information Base, PIT for Pending Interest Table, CS for Content Store (Excerpt from \cite{A_Survey_of_Information-Centric_Networking_Research})．}
   \label{fig:ccn_ndn_routing}
 \end{figure}
 
-\chapter{シミュレーション}
+\chapter{方針}
+
+\section{URLのクラシフィケーション}
+NDNのコンテンツ名はURLに似ているのでまずURLの階層構造について調べる．
+
+Uniform-Resource-Locator(URL)はRFC1738\cite{rfc1738}により規格化されており，リソースの位置を特定するために用いられる．
+HTTP URLの構造をFig \ref{fig:http_url_structure}に示す．また，Table \ref{tab:http_url_variables_description}に各変数の説明を示す．
+
+\begin{figure}[h]
+  \centering
+  \begin{BVerbatim}
+    <scheme>://<host>:<port>/<path>?<searchpart>
+  \end{BVerbatim}
+  \label{fig:http_url_structure}
+  \caption{HTTP URL Structure}
+\end{figure}
+
+\begin{table}[h]
+  \centering
+  \label{tab:http_url_variables_description}
+  \caption{HTTP URL variables description}
+  \begin{tabular}{@{}cp{12cm}@{}}
+    \toprule
+    Variables & \multicolumn{1}{c}{Description} \\ \midrule
+    \verb|<scheme>| & \verb|http|, \verb|https|などのプロトコル体系を表す． \\
+    \verb|<host>| & ネットワークホストのドメイン名，またはIPアドレス．"."によって区切られるドメインラベルの連続は，各々のドメインラベルが英字あるいは"-"を含んだ文字で開始・終了する． \\
+    \verb|<port>| & 接続先のポート番号．デフォルトのポート番号(80,443)以外のポートを指定するときのみコロンで区切って続ける．\\
+    \verb|<path>| & HTTPセレクタでリソースの位置を指定する \\
+    \verb|<searchpart>| & 検索パラメータである．これが省略されたときは"?"も省略される \\ \bottomrule
+  \end{tabular}
+\end{table}
+
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=100mm]{fig/url_segment-crop.pdf}
+  \caption{The CCN/NDN architecture．CR stands for Content Router, FIB for Forwarding Information Base, PIT for Pending Interest Table, CS for Content Store (Excerpt from \cite{A_Survey_of_Information-Centric_Networking_Research})．}
+  \label{fig:ccn_ndn_routing}
+\end{figure}
 
 \section{プログラム}
 ハッシュアルゴリズムの検証・URLの構造解析を行うためにシミュレーションプログラムをGolangで作成した．
 \section{データの前処理}
-データとして，The Content Name Collection\footnote{\url{http://www.icn-names.net/} にて"The Content Name Collection"というバーゼル大学による情報指向ネットワークのためのデータセットが2019年10月まで公開されていたが，ドメインの有効期限切れのため現在は全く関係のない中国の会社によりドメインが取得されている．}
-で公開されている膨大なURLのデータセットを用いる．
-そのデータセットの内Table \ref{tab:dataset_detail}に示す\url{urls.txt}を使う．
+シミュレーションに用いるデータとして，The Content Name Collection\footnote{\url{http://www.icn-names.net/} にて"The Content Name Collection"というバーゼル大学による情報指向ネットワークのためのデータセットが2019年10月まで公開されていたが，ドメインの有効期限切れのため現在は全く関係のない中国の会社によりドメインが取得されている．}
+で公開されている情報指向ネットワークのための膨大なURLのデータセットを用いる．
+そのデータセットの内の一つである\url{urls.txt}を使う．
+\url{urls.txt}はFig \ref{fig:urls_txt_10}のように改行で区別されているURLのリストになっている．
+\url{urls.txt}の概要をTable \ref{tab:dataset_overview}に示す．
 
+\begin{figure}[h]
+  \centering
+  \begin{BVerbatim}
+http://www.google.com
+http://images.google.com/imgres
+http://www.19lou.com
+http://www.sfd.com
+http://www.baidu.com
+http://www.sina.com.cn
+http://www.netvibes.com/
+http://www.google.com/search
+http://images.google.com/
+http://wrestlingabrasil.blogspot.com/
+  \end{BVerbatim}
+  \label{fig:urls_txt_10}
+  \caption{Sample 10 in the urls.txt}
+\end{figure}
 \begin{table}[h]
-  \center
-  \caption{Dataset "urls.txt" detail}
-  \label{tab:dataset_detail}
+  \centering
+  \caption{Dataset "urls.txt" overview}
+  \label{tab:dataset_overview}
   \begin{tabular}{@{}cccc@{}}
     \toprule
-    Dataset  & Number of URLs                    & unique                 & File size                                          \\ \midrule
+    Dataset        & Number of URLs                      & unique                 & File size                                            \\ \midrule
     \url{urls.txt} & \multicolumn{1}{r}{$2,144,314,011$} & \multicolumn{1}{r}{no} & \multicolumn{1}{r}{121 GB ($130,782,049,461$ Bytes)} \\ \bottomrule
   \end{tabular}
 \end{table}
+
+
 
 \url{urls.txt}の前処理として以下の工程を行う．
 \begin{enumerate}
@@ -209,7 +270,6 @@ ICNの実用化を行うため，CRのハードウェアによる実装が不可
 
 
 
-\section{URLのクラシフィケーション}
 \section{ハッシュアルゴリズム}
 
 \chapter{衝突数の検証結果}
