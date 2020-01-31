@@ -18,13 +18,15 @@
   % pLaTeX の時
 }}}
 
-\renewcommand{\figurename}{Fig}
+\renewcommand{\figurename}{Fig }
+\renewcommand{\tablename}{Table }
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{mathtools}
 \mathtoolsset{showonlyrefs=true}
 \usepackage{siunitx}
+\usepackage{booktabs}
 \usepackage{url}
 
 \begin{document}
@@ -135,7 +137,7 @@ NDNにおけるコンテンツ名の命名規則は階層構造になってお�
 \paragraph{名前解決とデータルーティング}
 NDNにおいて，Subscriberはコンテンツを取得する際はコンテンツ取得要求であるINTERESTパケットを発行して，PublisherからのDATAパケットの形式で到着するコンテンツを取得する．
 INTEREST/DATAパケットは，それぞれ要求/転送されるコンテンツのコンテンツ名を持つ．
-Fig\ref{fig:ccn_ndn_routing}に示すように，すべてのパケットはContent Router (CR)によってホップバイホップ(hop by hop)で転送され，
+Fig \ref{fig:ccn_ndn_routing}に示すように，すべてのパケットはContent Router (CR)によってホップバイホップ(hop by hop)で転送され，
 各CRには3つのデータ構造(Forwarding Information Base (FIB), Pending Interest Table (PIT), Content Store (CS))がある．
 FIBは，INTERESTパケットを適切なデータソースに転送するために使用するインターフェイスとコンテンツ名をマッピングする．
 PITは，保留中のINTERESTパケットが到着した受信インターフェイス，つまり一致するDATAパケットが転送されてきたときに返送するインターフェースとコンテンツ名をマッピングすることでINTERESTパケットを追跡する．
@@ -145,7 +147,7 @@ INTERESTパケットが到着すると，CRはコンテンツ名を抽出し要�
 CSでキャッシュが見つかった場合，すぐにDATAパケットとして受信インターフェイスを介して送返され，INTERESTパケットは破棄される．
 それ以外の場合，CRはこのINTERESTパケットを転送するインターフェースを決定するために，FIBで最長プレフィックス検索を実行する．
 FIBでエントリが見つかった場合，CRはPITにINTERESTパケットの受信インターフェイスとコンテンツ名を記録し，FIBが示すCRにINTERESTパケットを転送します．
-Fig\ref{fig:ccn_ndn_routing}では，Subscriberは\url{/aueb.gr/ai/new.htm}という名前のINTERESTパケットを送信する(矢印1〜3)．
+Fig \ref{fig:ccn_ndn_routing}では，Subscriberは\url{/aueb.gr/ai/new.htm}という名前のINTERESTパケットを送信する(矢印1〜3)．
 PITにコンテンツ名のエントリが既に含まれている場合，つまりこのコンテンツが既に要求されている場合，CRは受信インターフェイスをこのPITエントリに追加し，INTERESTパケットを破棄する．
 
 要求されたコンテンツ名に一致するコンテンツがPublisherまたはCSで見つかった場合，INTERESTパケットは破棄され，コンテンツはDATAパケットとして返送される．
@@ -176,14 +178,42 @@ ICNの実用化を行うため，CRのハードウェアによる実装が不可
   \label{fig:ccn_ndn_routing}
 \end{figure}
 
-\chapter{シミュレーションプログラム}
-\section{プログラムの概要}
-ハッシュアルゴリズムの検証を行うためにシミュレーションプログラムを作成した．
+\chapter{シミュレーション}
+
+\section{プログラム}
+ハッシュアルゴリズムの検証・URLの構造解析を行うためにシミュレーションプログラムをGolangで作成した．
+\section{データの前処理}
+データとして，The Content Name Collection\footnote{\url{http://www.icn-names.net/} にて"The Content Name Collection"というバーゼル大学による情報指向ネットワークのためのデータセットが2019年10月まで公開されていたが，ドメインの有効期限切れのため現在は全く関係のない中国の会社によりドメインが取得されている．}
+で公開されている膨大なURLのデータセットを用いる．
+そのデータセットの内Table \ref{tab:dataset_detail}に示す\url{urls.txt}を使う．
+
+\begin{table}[h]
+  \center
+  \caption{Dataset "urls.txt" detail}
+  \label{tab:dataset_detail}
+  \begin{tabular}{@{}cccc@{}}
+    \toprule
+    Dataset  & Number of URLs                    & unique                 & File size                                          \\ \midrule
+    \url{urls.txt} & \multicolumn{1}{r}{$2,144,314,011$} & \multicolumn{1}{r}{no} & \multicolumn{1}{r}{121 GB ($130,782,049,461$ Bytes)} \\ \bottomrule
+  \end{tabular}
+\end{table}
+
+\url{urls.txt}の前処理として以下の工程を行う．
+\begin{enumerate}
+  \item このデータには重複が含まれているので重複を削除する．
+  \item 各CRでの実際的なURLは10MBほどであるという仮定のうえ，ランダムな10MBごとのサンプルを抽出する．
+\end{enumerate}
 
 
 
-\chapter{衝突数の検証}
-\section{ハッシュのみを用いたとき}
+
+
+
+\section{URLのクラシフィケーション}
+\section{ハッシュアルゴリズム}
+
+\chapter{衝突数の検証結果}
+\subsection{ハッシュアルゴリズム}
 \section{URLの分類手法を利用するとき}
 \section{ハッシュとURLの分類手法を併用したとき}
 
