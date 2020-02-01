@@ -20,6 +20,7 @@
 
 \renewcommand{\figurename}{Fig. }
 \renewcommand{\tablename}{Table }
+
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -147,7 +148,7 @@ PITは，保留中のINTERESTパケットが到着した受信インターフェ
 最後に，CSはCRを通過したコンテンツのローカルキャッシュとして機能する.
 
 INTERESTパケットが到着すると，CRはコンテンツ名を抽出し要求されたプレフィックスと一致する名前を持つCSのコンテンツを探す．
-CSでキャッシュが見つかった場合，すぐにDATAパケットとして受信インターフェイスを介して送返され，INTERESTパケットは破棄される．
+CSでキャッシュが見つかった場合，すぐにDATAパケットとして受信インターフェイスを介して返送され，INTERESTパケットは破棄される．
 それ以外の場合，CRはこのINTERESTパケットを転送するインターフェースを決定するために，FIBで最長プレフィックス検索を実行する．
 FIBでエントリが見つかった場合，CRはPITにINTERESTパケットの受信インターフェイスとコンテンツ名を記録し，FIBが示すCRにINTERESTパケットを転送します．
 Fig. \ref{fig:ccn_ndn_routing}では，Subscriberは\url{/aueb.gr/ai/new.htm}という名前のINTERESTパケットを送信する(矢印1〜3)．
@@ -185,20 +186,18 @@ ICNの実用化を行うため，CRのハードウェアによる実装が不可
 \chapter{解析手法}
 
 \section{URLの構造}
-NDNのコンテンツ名はURLに似ているのでまずURLの階層構造について調べる．
+NDNのコンテンツ名はURLに似ているのでURLの階層構造について調べる．
 
 Uniform-Resource-Locator(URL)はRFC1738\cite{rfc1738}により規格化されており，リソースの位置を特定するために用いられる．
-HTTP URLの構造をFig. \ref{fig:http_url_structure}に示す．また，Table \ref{tab:http_url_variables_description}に各変数の説明を示す．
-
-\begin{figure}[h]
-  \centering
+HTTP URLの構造は
+\begin{center}
   \begin{BVerbatim}
-    <scheme>://<host>:<port>/<path>?<searchpart>
+<scheme>://<host>:<port>/<path>?<searchpart>
   \end{BVerbatim}
-  \label{fig:http_url_structure}
-  \caption{HTTP URL Structure}
-\end{figure}
+\end{center}
 
+\noindent
+である．また，Table \ref{tab:http_url_variables_description}に各変数の説明を示す．
 \begin{table}[h]
   \centering
   \label{tab:http_url_variables_description}
@@ -215,47 +214,67 @@ HTTP URLの構造をFig. \ref{fig:http_url_structure}に示す．また，Table 
 \end{table}
 
 URLは\url{host}部によって階層構造に分けることができる．
-\url{host}部はドメイン名かIPアドレスによって構成されているが，ドメイン名に注目する．
-Domain Name System(DNS)は木構造でありドメイン名にはその階層構造が反映されている．
-前述のドメイン名とは実際にはFully Qualified Domain Name(FQDN)\cite{rfc1983}のことであり，Fig. \ref{fig:fqdn_structure}のような構造である．
+\url{host}部はドメイン名またはIPアドレスによって構成されているが，ここでは一般に多く使われているドメイン名のみに注目する．
+Domain Name System (DNS)は木構造でありドメイン名にはその階層構造が反映されている．
+前述のドメイン名とは実際にはFully Qualified Domain Name (FQDN)\cite{rfc1983}のことであり，Fig. \ref{fig:fqdn_structure}のような構造である．
 FQDNは"."で区切られた各ラベルの連続であり右端の"."がルートとなる．
-ルートから順に各ラベルはTop-Level Domain(TLD), Second-Level Domain(SLD), 3rd-Level Domain(3rdLD), 4th-Level Domain(4thLD) ... のように名前がつけられている．
+ルートから順に各ラベルはTop-Level Domain (TLD), Second-Level Domain (SLD), 3rd-Level Domain (3rdLD), 4th-Level Domain (4thLD), ... のように名前がつけられている．
 また左端のラベルをHost Nameと呼び，それ以外のラベルをまとめてDomain Nameと呼ぶ．
 
-Top-Level Domain (TLD)にはcountry code TLD(ccTLD), generic TLD (gTLD), restricted generic TLD(grTLD), sponsored TLD (sTLD)などがありそれぞれICANNにより管理されている\cite{tld}．
+Top-Level Domain (TLD)にはcountry code TLD (ccTLD), generic TLD (gTLD), restricted generic TLD (grTLD), sponsored TLD (sTLD)などがありそれぞれICANNにより管理されている\cite{tld}．
 それぞれの例をTable \ref{tab:example_tld}に示す．
 \begin{figure}[h]
   \centering
-  \includegraphics[width=60mm]{fig/fqdn_structure-crop.pdf}
-  \caption{Fully Qualified Domain Name(FQDN) structure. FQDN include last ".". TLD stands for Top-Level Domain, SLD for Second-Level Domain, 3rdLD for 3rd-Level Domain, 4thLD for 4t-Level Domain.}
+  \includegraphics[width=50mm]{fig/fqdn_structure-crop.pdf}
+  \caption{Fully Qualified Domain Name (FQDN) structure. FQDN ends with a period. TLD stands for Top-Level Domain, SLD for Second-Level Domain, 3rdLD for 3rd-Level Domain, 4thLD for 4t-Level Domain.}
   \label{fig:fqdn_structure}
 \end{figure}
-
 \begin{table}[h]
   \centering
   \caption{Example of each TLDs}
   \label{tab:example_tld}
-  \begin{tabular}{@{}cccc@{}}
+  \begin{tabular}{@{}ccccc@{}}
   \toprule
-  ccTLD & gTLD & grTLD & sTLD \\ \midrule
-  .jp & .com & .biz & .aero \\
-  .uk & .info & .name & .asia \\
-  .cn & .net & .pro & .cat \\ \bottomrule
+  ccTLD & gTLD & grTLD & sTLD & eTLD\\ \midrule
+  \url{.jp} & \url{.com} & \url{.biz} & \url{.aero} & \url{.co.jp} \\ 
+  \url{.uk} & \url{.info} & \url{.name} & \url{.asia} & \url{.ac.jp} \\
+  \url{.cn} & \url{.net} & \url{.pro} & \url{.cat} & \url{.akashi.hyogo.jp} \\ \bottomrule
   \end{tabular}
 \end{table}
 
-また，各ブラウザによるクッキーの適応可能範囲決定のために"１つのサイト"の単位というものが求められた．それを受けてPublic Suffixというものが提案された\footnote{例えば，\url{example.co.jp}や\url{a.example.co.jp}のPublic Suffixは\url{co.jp}で，\url{example.co.jp}が
+\paragraph{Public Suffix (eTLD)}
+各ブラウザによるクッキーの適応可能範囲決定のために"１つのサイト"の単位というものが求められた．それを受けてPublic Suffixというものが提案された\footnote{例えば，\url{example.co.jp}や\url{a.example.co.jp}のPublic Suffixは\url{co.jp}で，\url{example.co.jp}が
 サイトの単位となる．もし，\url{example.co.jp}がドメインが\url{co.jp}や\url{jp}のクッキーを発行できてしまうと，異なるサイトであるはずの\url{test.co.jp}にも干渉できてしまう．これを防ぐためにクッキーの処理ではPSLを参照するようになっている．}．
 これはeffective TLD (eTLD)とも呼ばれ，TLDや\url{co.jp}などの実質的にTLDのように機能するドメインを指す．
 TLD内のサブドメインの構造はTLDごとに異なるため，機械的にeTLDを決定することはできない．
-それを解決するためにPublic Suffix List (PSL)\cite{psl}として一覧表が管理されている．
+そのためPublic Suffix List (PSL)\cite{psl}として一覧表が管理されている．
+
+\section{ICNにおけるコンテンツ名}
+ICNにおけるコンテンツ名を本研究では
+\begin{center}
+  \begin{BVerbatim}
+icn:/<reTLD>/<Root>/<rHostName>/<Path>
+  \end{BVerbatim}
+\end{center}
+のように定義し，ICN-URLと呼ぶ．
+\verb|reTLD| (reverse-eTLD)と\verb|rHostName| (reverse-HostName)はそれぞれ\verb|eTLD|と\verb|HostName|を"."を区切りとして逆順に配置したものである．
+すなわち，\verb|eTLD|が\verb|ab.cd.ef|なら\verb|reTLD|は\verb|ef.cd.ab|となる．
+Fig. \ref{fig:icn_url_structure}に具体例を示す．
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=80mm]{fig/icn_url_structure-crop.pdf}
+  \caption{Example of ICN-URL}
+  \label{fig:icn_url_structure}
+\end{figure}
+
 
 \section{性能の評価手順}
 Fig. \ref{fig:ccn_ndn_routing}のテーブルをFig. \ref{fig:ndn_table}に再掲する．
 FIB, PIT, CSの３つのテーブルはNameをキーとしており，その分布を評価することでアルゴリズムの性能を評価する．
 評価のためにFig. \ref{fig:table}に示す手順を行った．
 入手可能な全URLのリスト(All list)から10MB程度のサイズになるようにランダムに抽出したリスト(Sampled list)を作る．
-そのリストからポインタとハッシュのテーブルを作る．
+そのリストのURLからICN-URLに変換しeTLDの頻度の降順に並べる．
+順にICN-URLからハッシュを計算してハッシュテーブルを作成し，ハッシュテーブルの各eTLDの先頭アドレスを保持したポインタテーブルを作成する．
 \begin{figure}[h]
   \centering
   \includegraphics[width=50mm]{fig/ndn_table-crop.pdf}
