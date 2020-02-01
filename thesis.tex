@@ -18,7 +18,7 @@
   % pLaTeX の時
 }}}
 
-\renewcommand{\figurename}{Fig }
+\renewcommand{\figurename}{Fig. }
 \renewcommand{\tablename}{Table }
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -29,6 +29,8 @@
 \usepackage{booktabs}
 \usepackage{fancyvrb}
 \usepackage{url}
+\usepackage[super]{cite}
+\renewcommand\citeform[1]{[#1]}
 
 \begin{document}
 
@@ -138,7 +140,7 @@ NDNにおけるコンテンツ名の命名規則は階層構造になってお�
 \paragraph{名前解決とデータルーティング}
 NDNにおいて，Subscriberはコンテンツを取得する際はコンテンツ取得要求であるINTERESTパケットを発行して，PublisherからのDATAパケットの形式で到着するコンテンツを取得する．
 INTEREST/DATAパケットは，それぞれ要求/転送されるコンテンツのコンテンツ名を持つ．
-Fig \ref{fig:ccn_ndn_routing}に示すように，すべてのパケットはContent Router (CR)によってホップバイホップ(hop by hop)で転送され，
+Fig. \ref{fig:ccn_ndn_routing}に示すように，すべてのパケットはContent Router (CR)によってホップバイホップ(hop by hop)で転送され，
 各CRには3つのデータ構造(Forwarding Information Base (FIB), Pending Interest Table (PIT), Content Store (CS))がある．
 FIBは，INTERESTパケットを適切なデータソースに転送するために使用するインターフェイスとコンテンツ名をマッピングする．
 PITは，保留中のINTERESTパケットが到着した受信インターフェイス，つまり一致するDATAパケットが転送されてきたときに返送するインターフェースとコンテンツ名をマッピングすることでINTERESTパケットを追跡する．
@@ -148,7 +150,7 @@ INTERESTパケットが到着すると，CRはコンテンツ名を抽出し要�
 CSでキャッシュが見つかった場合，すぐにDATAパケットとして受信インターフェイスを介して送返され，INTERESTパケットは破棄される．
 それ以外の場合，CRはこのINTERESTパケットを転送するインターフェースを決定するために，FIBで最長プレフィックス検索を実行する．
 FIBでエントリが見つかった場合，CRはPITにINTERESTパケットの受信インターフェイスとコンテンツ名を記録し，FIBが示すCRにINTERESTパケットを転送します．
-Fig \ref{fig:ccn_ndn_routing}では，Subscriberは\url{/aueb.gr/ai/new.htm}という名前のINTERESTパケットを送信する(矢印1〜3)．
+Fig. \ref{fig:ccn_ndn_routing}では，Subscriberは\url{/aueb.gr/ai/new.htm}という名前のINTERESTパケットを送信する(矢印1〜3)．
 PITにコンテンツ名のエントリが既に含まれている場合，つまりこのコンテンツが既に要求されている場合，CRは受信インターフェイスをこのPITエントリに追加し，INTERESTパケットを破棄する．
 
 要求されたコンテンツ名に一致するコンテンツがPublisherまたはCSで見つかった場合，INTERESTパケットは破棄され，コンテンツはDATAパケットとして返送される．
@@ -179,13 +181,14 @@ ICNの実用化を行うため，CRのハードウェアによる実装が不可
   \label{fig:ccn_ndn_routing}
 \end{figure}
 
-\chapter{方針}
 
-\section{URLのクラシフィケーション}
+\chapter{解析手法}
+
+\section{URLの構造}
 NDNのコンテンツ名はURLに似ているのでまずURLの階層構造について調べる．
 
 Uniform-Resource-Locator(URL)はRFC1738\cite{rfc1738}により規格化されており，リソースの位置を特定するために用いられる．
-HTTP URLの構造をFig \ref{fig:http_url_structure}に示す．また，Table \ref{tab:http_url_variables_description}に各変数の説明を示す．
+HTTP URLの構造をFig. \ref{fig:http_url_structure}に示す．また，Table \ref{tab:http_url_variables_description}に各変数の説明を示す．
 
 \begin{figure}[h]
   \centering
@@ -199,34 +202,80 @@ HTTP URLの構造をFig \ref{fig:http_url_structure}に示す．また，Table \
 \begin{table}[h]
   \centering
   \label{tab:http_url_variables_description}
-  \caption{HTTP URL variables description}
+  \caption{HTTP URL variables description\cite{rfc1738}}
   \begin{tabular}{@{}cp{12cm}@{}}
     \toprule
     Variables & \multicolumn{1}{c}{Description} \\ \midrule
     \verb|<scheme>| & \verb|http|, \verb|https|などのプロトコル体系を表す． \\
-    \verb|<host>| & ネットワークホストのドメイン名，またはIPアドレス．"."によって区切られるドメインラベルの連続は，各々のドメインラベルが英字あるいは"-"を含んだ文字で開始・終了する． \\
+    \verb|<host>| & ネットワークホストのドメイン名，またはIPアドレス．ドメイン名は"."によって区切られるドメインラベルの連続． \\
     \verb|<port>| & 接続先のポート番号．デフォルトのポート番号(80,443)以外のポートを指定するときのみコロンで区切って続ける．\\
-    \verb|<path>| & HTTPセレクタでリソースの位置を指定する \\
-    \verb|<searchpart>| & 検索パラメータである．これが省略されたときは"?"も省略される \\ \bottomrule
+    \verb|<path>| & HTTPセレクタでリソースの位置を指定する． \\
+    \verb|<searchpart>| & 検索パラメータである．これが省略されたときは"?"も省略される． \\ \bottomrule
   \end{tabular}
 \end{table}
 
+URLは\url{host}部によって階層構造に分けることができる．
+\url{host}部はドメイン名かIPアドレスによって構成されているが，ドメイン名に注目する．
+Domain Name System(DNS)は木構造でありドメイン名にはその階層構造が反映されている．
+前述のドメイン名とは実際にはFully Qualified Domain Name(FQDN)\cite{rfc1983}のことであり，Fig. \ref{fig:fqdn_structure}のような構造である．
+FQDNは"."で区切られた各ラベルの連続であり右端の"."がルートとなる．
+ルートから順に各ラベルはTop-Level Domain(TLD), Second-Level Domain(SLD), 3rd-Level Domain(3rdLD), 4th-Level Domain(4thLD) ... のように名前がつけられている．
+また左端のラベルをHost Nameと呼び，それ以外のラベルをまとめてDomain Nameと呼ぶ．
 
+Top-Level Domain (TLD)にはcountry code TLD(ccTLD), generic TLD (gTLD), restricted generic TLD(grTLD), sponsored TLD (sTLD)などがありそれぞれICANNにより管理されている\cite{tld}．
+それぞれの例をTable \ref{tab:example_tld}に示す．
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=60mm]{fig/fqdn_structure-crop.pdf}
+  \caption{Fully Qualified Domain Name(FQDN) structure. FQDN include last ".". TLD stands for Top-Level Domain, SLD for Second-Level Domain, 3rdLD for 3rd-Level Domain, 4thLD for 4t-Level Domain.}
+  \label{fig:fqdn_structure}
+\end{figure}
+
+\begin{table}[h]
+  \centering
+  \caption{Example of each TLDs}
+  \label{tab:example_tld}
+  \begin{tabular}{@{}cccc@{}}
+  \toprule
+  ccTLD & gTLD & grTLD & sTLD \\ \midrule
+  .jp & .com & .biz & .aero \\
+  .uk & .info & .name & .asia \\
+  .cn & .net & .pro & .cat \\ \bottomrule
+  \end{tabular}
+\end{table}
+
+また，各ブラウザによるクッキーの適応可能範囲決定のために"１つのサイト"の単位というものが求められた．それを受けてPublic Suffixというものが提案された\footnote{例えば，\url{example.co.jp}や\url{a.example.co.jp}のPublic Suffixは\url{co.jp}で，\url{example.co.jp}が
+サイトの単位となる．もし，\url{example.co.jp}がドメインが\url{co.jp}や\url{jp}のクッキーを発行できてしまうと，異なるサイトであるはずの\url{test.co.jp}にも干渉できてしまう．これを防ぐためにクッキーの処理ではPSLを参照するようになっている．}．
+これはeffective TLD (eTLD)とも呼ばれ，TLDや\url{co.jp}などの実質的にTLDのように機能するドメインを指す．
+TLD内のサブドメインの構造はTLDごとに異なるため，機械的にeTLDを決定することはできない．
+それを解決するためにPublic Suffix List (PSL)\cite{psl}として一覧表が管理されている．
+
+\section{性能の評価手順}
+Fig. \ref{fig:ccn_ndn_routing}のテーブルをFig. \ref{fig:ndn_table}に再掲する．
+FIB, PIT, CSの３つのテーブルはNameをキーとしており，その分布を評価することでアルゴリズムの性能を評価する．
+評価のためにFig. \ref{fig:table}に示す手順を行った．
+入手可能な全URLのリスト(All list)から10MB程度のサイズになるようにランダムに抽出したリスト(Sampled list)を作る．
+そのリストからポインタとハッシュのテーブルを作る．
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=50mm]{fig/ndn_table-crop.pdf}
+  \caption{Tables of FIB, PIT, CS.}
+  \label{fig:ndn_table}
+\end{figure}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=100mm]{fig/url_segment-crop.pdf}
-  \caption{The CCN/NDN architecture．CR stands for Content Router, FIB for Forwarding Information Base, PIT for Pending Interest Table, CS for Content Store (Excerpt from \cite{A_Survey_of_Information-Centric_Networking_Research})．}
-  \label{fig:ccn_ndn_routing}
+  \includegraphics[width=120mm]{fig/table-crop.pdf}
+  \caption{}
+  \label{fig:table}
 \end{figure}
 
-\section{プログラム}
-ハッシュアルゴリズムの検証・URLの構造解析を行うためにシミュレーションプログラムをGolangで作成した．
-\section{データの前処理}
+
+\section{解析データ}
 シミュレーションに用いるデータとして，The Content Name Collection\footnote{\url{http://www.icn-names.net/} にて"The Content Name Collection"というバーゼル大学による情報指向ネットワークのためのデータセットが2019年10月まで公開されていたが，ドメインの有効期限切れのため現在は全く関係のない中国の会社によりドメインが取得されている．}
 で公開されている情報指向ネットワークのための膨大なURLのデータセットを用いる．
 そのデータセットの内の一つである\url{urls.txt}を使う．
-\url{urls.txt}はFig \ref{fig:urls_txt_10}のように改行で区別されているURLのリストになっている．
+\url{urls.txt}はFig. \ref{fig:urls_txt_10}のように改行で区別されているURLのリストになっている．
 \url{urls.txt}の概要をTable \ref{tab:dataset_overview}に示す．
 
 \begin{figure}[h]
@@ -242,9 +291,12 @@ http://www.netvibes.com/
 http://www.google.com/search
 http://images.google.com/
 http://wrestlingabrasil.blogspot.com/
+...
+...
+...
   \end{BVerbatim}
-  \label{fig:urls_txt_10}
   \caption{Sample 10 in the urls.txt}
+  \label{fig:urls_txt_10}
 \end{figure}
 \begin{table}[h]
   \centering
@@ -258,6 +310,8 @@ http://wrestlingabrasil.blogspot.com/
 \end{table}
 
 
+\section{プログラム}
+ハッシュアルゴリズムの検証・URLの構造解析を行うためにシミュレーションプログラムをGolangで作成した．
 
 \url{urls.txt}の前処理として以下の工程を行う．
 \begin{enumerate}
@@ -268,7 +322,7 @@ http://wrestlingabrasil.blogspot.com/
 
 
 
-
+\section{コンテンツ名への変換}
 
 \section{ハッシュアルゴリズム}
 
