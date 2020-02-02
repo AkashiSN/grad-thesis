@@ -212,7 +212,7 @@ HTTP URLの構造は
 \begin{table}[h]
   \centering
   \label{tab:http_url_variables_description}
-  \caption{HTTP URL variables description\cite{rfc1738}}
+  \caption{HTTP URL variables description\cite{rfc1738}．}
   \begin{tabular}{@{}cp{12cm}@{}}
     \toprule
     Variables & \multicolumn{1}{c}{Description} \\ \midrule
@@ -237,12 +237,12 @@ Top-Level Domain (TLD)にはcountry code TLD (ccTLD), generic TLD (gTLD), restri
 \begin{figure}[h]
   \centering
   \includegraphics[width=50mm]{fig/fqdn_structure-crop.pdf}
-  \caption{Fully Qualified Domain Name (FQDN) structure. FQDN ends with a period. TLD stands for Top-Level Domain, SLD for Second-Level Domain, 3rdLD for 3rd-Level Domain, 4thLD for 4t-Level Domain.}
+  \caption{Fully Qualified Domain Name (FQDN) structure. FQDN ends with a period. TLD stands for Top-Level Domain, SLD for Second-Level Domain, 3rdLD for 3rd-Level Domain, 4thLD for 4t-Level Domain．}
   \label{fig:fqdn_structure}
 \end{figure}
 \begin{table}[h]
   \centering
-  \caption{Example of each TLDs}
+  \caption{Example of each TLDs．}
   \label{tab:example_tld}
   \begin{tabular}{@{}ccccc@{}}
   \toprule
@@ -274,7 +274,7 @@ Fig. \ref{fig:icn_url_structure}に具体例を示す．
 \begin{figure}[h]
   \centering
   \includegraphics[width=90mm]{fig/icn_url_structure-crop.pdf}
-  \caption{Example of ICN-URL}
+  \caption{Example of ICN-URL．}
   \label{fig:icn_url_structure}
 \end{figure}
 
@@ -286,18 +286,20 @@ FIB, PIT, CSの３つのテーブルはNameをキーとしており，その分�
 入手可能な全URLのリスト(All list)から10MB程度のサイズになるようにランダムに抽出したリスト(Sampled list)を作る．
 そのリストでURLの規格に合わないものを除外したのち，ICN-URLに変換しeTLDの頻度の多い順に並べる．
 順にICN-URLからハッシュを計算してハッシュテーブルを作成し，ハッシュテーブルの各eTLDの先頭アドレスを保持したポインタテーブルを作成する．
+作成したハッシュテーブルの中で同一のハッシュ値となっているものを衝突という．
+衝突がないほうが性能が良いと考えられるため，衝突数の分布を調べることにより性能を評価する．
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=50mm]{fig/ndn_table-crop.pdf}
-  \caption{Tables of FIB, PIT, CS.}
+  \caption{Tables of FIB, PIT, CS．}
   \label{fig:ndn_table}
 \end{figure}
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=140mm]{fig/table-crop.pdf}
-  \caption{Analysis procedure}
+  \caption{Analysis procedure．}
   \label{fig:table}
 \end{figure}
 
@@ -326,12 +328,12 @@ http://wrestlingabrasil.blogspot.com/
 ...
 ...
   \end{BVerbatim}
-  \caption{Sample 10 in the urls.txt}
+  \caption{Sample 10 in the urls.txt．}
   \label{fig:urls_txt_10}
 \end{figure}
 \begin{table}[h]
   \centering
-  \caption{Dataset "urls.txt" overview}
+  \caption{Dataset "urls.txt" overview．}
   \label{tab:dataset_overview}
   \begin{tabular}{@{}cccc@{}}
     \toprule
@@ -341,7 +343,8 @@ http://wrestlingabrasil.blogspot.com/
 \end{table}
 
 \url{urls.txt}の前処理として以下の工程を行う．
-このデータには重複が含まれているので重複を削除し，各CRでの実際的なURLは10MBほどであるという仮定のうえ，ランダムな10MBを抽出し，解析データとした．
+このデータには重複が含まれているので重複を削除し，これは60GBほどのサイズで約8.8億件のURLを含み，全URLリストと呼ぶ．
+各CRでの実際的なURLは10MBほどであるという仮定のうえ，ランダムな10MBを抽出し，解析データとした．
 ここには約14万件のURLが含まれる．
 この解析データ中の各URLをICN-URLに変換する．
 
@@ -358,6 +361,7 @@ ICN-URLからハッシュ値を求めるアルゴリズムを述べる．
 
 次に，各セクションから前3文字を抜き出して配列headsとする．
 同様に後3文字を抜き出して配列tailsとする．ただしパティングが含まれているセクションはパディングと元の文字との順序を入れ替える．
+結果的にheadsとtailsのどちらかに含まれるセクションの数が3未満だったらそのURLは処理の対象外とする．
 
 \begin{figure}[h]
   \centering
@@ -376,7 +380,7 @@ headsの先頭1文字と先程の3バイトを連結したものを4バイトの
 \begin{figure}[h]
   \centering
   \includegraphics[width=120mm]{fig/hash_1-crop.pdf}
-  \caption{Hash algorithm A}
+  \caption{Hash algorithm A．}
   \label{fig:hash_A}
 \end{figure}
 
@@ -388,7 +392,7 @@ headsの先頭1文字と先程の2バイトを連結したものを3バイトの
 \begin{figure}[h]
   \centering
   \includegraphics[width=135mm]{fig/hash_2-crop.pdf}
-  \caption{Hash algorithm B}
+  \caption{Hash algorithm B．}
   \label{fig:hash_B}
 \end{figure}
 
@@ -400,7 +404,7 @@ headsの先頭1文字と先程の3バイトを連結したものを4バイトの
 \begin{figure}[h]
   \centering
   \includegraphics[width=135mm]{fig/hash_3-crop.pdf}
-  \caption{Hash algorithm C}
+  \caption{Hash algorithm C．}
   \label{fig:hash_C}
 \end{figure}
 
@@ -438,55 +442,110 @@ ICN-URLから3種類のいずれかのハッシュアルゴリズムによりハ
 \subsection{衝突数の解析}
 作成したハッシュテーブルの中で同一のハッシュ値となっているものを数え上げ，その件数を出力する．
 
+
 \chapter{性能評価}
-\section{データの抽出}
+ハッシュアルゴリズムの違いや，新たに提案したポインタを用いるデータ構造による衝突数の分布を調べることで性能を評価する．
+\section{解析データの妥当性}
+全URLリストからランダムに10MB分を抽出した解析データが元の全URLリストの分布と同じ特徴を持っているかを確かめる．
+それぞれのeTLDの頻度分布をFig \ref{graph:sampled_data}に示す．
+グラフ中のALL URLsは全URLリスト，Sampled URLsは解析データをそれぞれ示している．
+グラフから解析データは全URLリストとほぼ同じ分布を示しており，全URLリストの特徴を代表していると考えることができる．
 \begin{figure}[h]
   \centering
-  \includegraphics[width=110mm]{graph/sampled_data/sampled_data-crop.pdf}
-  \caption{}
+  \includegraphics[scale=0.65]{graph/sampled_data/sampled_data-crop.pdf}
+  \caption{Probability of eTLD appearance．}
   \label{graph:sampled_data}
 \end{figure}
 
-\section{eTLDの割合}
-\begin{figure}[h]
+\section{eTLDの分布}
+解析データのeTLDの分布を調べる．
+その分布をFig \ref{graph:ratio_of_etld_all}に示す．
+Fig \ref{graph:ratio_of_etld_all}からわかるようにごく少数のeTLDに大半のURLが含まれている．
+そこでFig \ref{graph:ratio_of_etld_detail}とTable \ref{tab:ratio_of_etld_detail}に上位10件の詳細の分布を示す．
+解析データのURLの件数は147,315であり，eTLDの上位10件に含まれるURLの件数は125,161である．
+すなわち上位10件で85\%を占めている．
+この内1位のcomで60\%を占めており，極端に偏っていることがわかる．
+これに対する対策が必要と予想される．
+\begin{table}[h]
   \centering
-  \includegraphics[width=110mm]{graph/ratio_of_etld/ratio_of_etld_all-crop.pdf}
-  \caption{}
+  \caption{Top 10 of eTLD, URL count and probability in the sampled URLs (147,315)．}
+  \label{tab:ratio_of_etld_detail}
+  \begin{tabular}{@{}crrr@{}}
+  \toprule
+  ID & \multicolumn{1}{c}{eTLD} & \multicolumn{1}{c}{URL count} & \multicolumn{1}{c}{Probability{[}\%{]}} \\ \midrule
+  0 & com & 89399 & 60.6856 \\
+  1 & net & 8285 & 5.6240 \\
+  2 & me & 7720 & 5.2405 \\
+  3 & org & 5201 & 3.5305 \\
+  4 & de & 3301 & 2.2408 \\
+  5 & blogspot.com & 2667 & 1.8104 \\
+  6 & jp & 2644 & 1.7948 \\
+  7 & co.uk & 2576 & 1.7486 \\
+  8 & info & 1783 & 1.2103 \\
+  9 & com.br & 1585 & 1.0759 \\ \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[scale=0.65]{graph/ratio_of_etld/ratio_of_etld_all-crop.pdf}
+  \caption{Probability of eTLD appearance in the sampled URLs．}
   \label{graph:ratio_of_etld_all}
 \end{figure}
-\begin{figure}[h]
+\begin{figure}[p]
   \centering
-  \includegraphics[width=110mm]{graph/ratio_of_etld/ratio_of_etld_detail-crop.pdf}
-  \caption{}
+  \includegraphics[scale=0.65]{graph/ratio_of_etld/ratio_of_etld_detail-crop.pdf}
+  \caption{Probability of eTLD appearance in the sampled URLs (top 10 eTLD)．}
   \label{graph:ratio_of_etld_detail}
 \end{figure}
 
-\section{全件に対してハッシュ衝突数}
-\begin{figure}[h]
+\section{ハッシュアルゴリズムの比較}
+3種類のハッシュアルゴリズムA--Cを比較するために，解析データ用いてハッシュテーブルを作成した．
+そのハッシュテーブルの中で同じハッシュ値を持つICN-URLの数を数え上げて衝突数とする．
+そして同じ衝突数を持つICN-URLの合計数を求める．
+この合計数の累積のICN-URL総数に対する比率を算出する．これを累積分布と呼ぶ．
+累積分布と1との差の絶対値を相補累積分布と呼ぶ(Complementary Cumulative Distribution Function: CCDF)．
+これをFig \ref{graph:hash_ccdf_A-C}に示す．
+このグラフではある横軸において値が小さい方がより衝突の割合が少ない．
+横軸は同じハッシュ値の数なので1は衝突していないことを意味し，2以上は衝突していることを表す．
+したがって，ハッシュアルゴリズムAが最良であるとわかる．
+\begin{figure}[p]
   \centering
-  \includegraphics[width=110mm]{graph/hash_ccdf/hash_A_C_ccdf-crop.pdf}
-  \caption{}
+  \includegraphics[scale=0.6]{graph/hash_ccdf/hash_A_C_ccdf-crop.pdf}
+  \caption{Complementary cumulative distribution function of same hash value with each hash algorithm A -- C．}
   \label{graph:hash_ccdf_A-C}
 \end{figure}
 
-\section{eTLDごとに分割したときにハッシュ衝突数}
-\begin{figure}[h]
+\section{eTLDごとのハッシュ衝突率}
+Fig \ref{fig:table}のポインタテーブルを用いることで，異なるeTLDは区別されるので1つのeTLDに対するハッシュ値の衝突だけが問題となる．
+したがって各eTLDについてだけハッシュ値の衝突率を求めればよい．
+Fig \ref{graph:etld_hash_ccdf}に各eTLDごとのハッシュアルゴリズムAのときのハッシュ衝突率を示す．
+
+グラフよりeTLDが\url{me}のとき衝突しない確率が低くなっていることがわかる．
+\url{formspring.me}というサイトがデータの大半を占めており，\url{icn:/me/formspring/nandaghizzo/q/908453668}のようなICN-URLの形式である．
+このときハッシュアルゴリズムAを用いると毎回異なるパラメータとなるのは最後の3文字つまり3桁の数字である．
+これは投稿などのIDだと考えられるので連番である可能性が高い．
+このことから1000件に1回は衝突することになり，今回\url{me}の件数は7720件であったため，
+最大でも7回の衝突のみとなり結果的に数件の衝突に集中した．
+
+他のeTLDについてはALL eTLDと近い傾向を示した．
+\begin{figure}[p]
   \centering
-  \includegraphics[width=110mm]{graph/etld_hash_ccdf/etld_hash_ccdf-crop.pdf}
-  \caption{}
+  \includegraphics[scale=0.6]{graph/etld_hash_ccdf/etld_hash_ccdf-crop.pdf}
+  \caption{Complementary cumulative distribution function of same hash value for each eTLD when hash algorith A．}
   \label{graph:etld_hash_ccdf}
 \end{figure}
 
 \section{分割のキーにrootを含めたときのキーの割合}
 \begin{figure}[h]
   \centering
-  \includegraphics[width=110mm]{graph/ratio_of_pointer/ratio_of_pointer_all-crop.pdf}
+  \includegraphics[scale=0.65]{graph/ratio_of_pointer/ratio_of_pointer_all-crop.pdf}
   \caption{}
   \label{graph:ratio_of_etld_all}
 \end{figure}
 \begin{figure}[h]
   \centering
-  \includegraphics[width=110mm]{graph/ratio_of_pointer/ratio_of_pointer_detail-crop.pdf}
+  \includegraphics[scale=0.65]{graph/ratio_of_pointer/ratio_of_pointer_detail-crop.pdf}
   \caption{}
   \label{graph:ratio_of_etld_detail}
 \end{figure}
@@ -495,13 +554,13 @@ ICN-URLから3種類のいずれかのハッシュアルゴリズムによりハ
 \section{キーで分割したときのハッシュの衝突数}
 \begin{figure}[h]
   \centering
-  \includegraphics[width=110mm]{graph/pointer_hash_ccdf/pointer-hash-ccdf-crop.pdf}
+  \includegraphics[scale=0.65]{graph/pointer_hash_ccdf/pointer-hash-ccdf-crop.pdf}
   \caption{}
   \label{graph:etld_hash_ccdf}
 \end{figure}
 
 
-\section{キーに含めたものとeTLDのもので別のハッシュアルゴリズム}
+% \section{キーに含めたものとeTLDのもので別のハッシュアルゴリズム}
 
 \section{検討}
 

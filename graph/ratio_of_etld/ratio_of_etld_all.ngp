@@ -419,7 +419,7 @@ new text
 	text::A=255
 	text::clip=true
 	text::redraw_flag=true
-	text::text='ID number of pointer'
+	text::text='ID number of eTLD'
 	text::x=7000
 	text::y=24000
 	text::pt=2000
@@ -438,9 +438,9 @@ new text
 	text::A=255
 	text::clip=true
 	text::redraw_flag=true
-	text::text='Ratio of appearance [\%]'
+	text::text='Probability of eTLD appearance [\%]'
 	text::x=1800
-	text::y=19000
+	text::y=20600
 	text::pt=2000
 	text::font='Sans-serif'
 	text::style=0

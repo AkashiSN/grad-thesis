@@ -479,8 +479,8 @@ new text
 	text::A=255
 	text::clip=true
 	text::redraw_flag=true
-	text::text='Order of eTLD appearance frequency'
-	text::x=5800
+	text::text='Order of eTLD appearance'
+	text::x=6800
 	text::y=23800
 	text::pt=2000
 	text::font='Serif'
@@ -499,7 +499,7 @@ new text
 	text::clip=true
 	text::redraw_flag=true
 	text::text='Probability of eTLD appearance'
-	text::x=1600
+	text::x=1800
 	text::y=19600
 	text::pt=2000
 	text::font='Serif'
