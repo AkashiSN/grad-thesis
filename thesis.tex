@@ -535,7 +535,7 @@ Fig. \ref{graph:etld_hash_ccdf}に各eTLDごとのハッシュアルゴリズム
   \label{graph:etld_hash_ccdf}
 \end{figure}
 
-\section{eTLDにRootを加えた場合の分布}
+\section{eTLDにRootを加えた場合}
 eTLDのみだと母数が大きいので細分化するために次の3種の規則によりRootをeTLDに追加する．
 \begin{enumerate}
   \item comのときのRootの出現回数が10のRootをeTLDに加える(Fig. \ref{graph:ratio_of_pointer_all}, \ref{graph:ratio_of_pointer_detail}の赤線)．
@@ -568,6 +568,10 @@ Fig. \ref{graph:ratio_of_pointer_all}から加えるRoot部の数が多いほど
   \end{tabular}
 \end{table}
 
+Fig \ref{graph:pointer_hash_ccdf}にeTDLにRootを加えたときと，加えてないときのハッシュ値の衝突率の比較を示す．
+グラフから\url{com}, \url{net}の衝突率がeTLDにRootを加えることで低減されていることがわかる．
+例えば\url{com}について，衝突しない確率が92\%からeTLDにRootを加えることで96\%に向上した．
+また，4回以上衝突する確率1.3\%から0.3\%に減少した．すなわち4倍以上の向上がみられた．
 \begin{figure}[h]
   \centering
   \includegraphics[scale=0.6]{graph/ratio_of_pointer/ratio_of_pointer_all-crop.pdf}
@@ -583,20 +587,19 @@ Fig. \ref{graph:ratio_of_pointer_all}から加えるRoot部の数が多いほど
   \label{graph:ratio_of_pointer_detail}
 \end{figure}
 
-
-\section{キーで分割したときのハッシュの衝突数}
 \begin{figure}[h]
   \centering
   \includegraphics[scale=0.65]{graph/pointer_hash_ccdf/pointer-hash-ccdf-crop.pdf}
   \caption{Complementary cumulative distribution function of same hash value for each eTLD when hash algorith A．}
-  \label{graph:etld_hash_ccdf}
+  \label{graph:pointer_hash_ccdf}
 \end{figure}
 
 
 % \section{キーに含めたものとeTLDのもので別のハッシュアルゴリズム}
 
-\section{検討}
-
+\section{まとめ}
+ハッシュアルゴリズムAのような3回のXORを行うだけの軽量な計算負荷で求まる4バイトのハッシュ値でも，
+ポインタテーブルを併用することにより5回以上の衝突確率を0.3\%に抑えることができる．
 \chapter{結論}
 
 \chapter*{謝辞}
