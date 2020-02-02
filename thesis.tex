@@ -21,6 +21,7 @@
 \renewcommand{\figurename}{Fig. }
 \renewcommand{\tablename}{Table }
 
+\usepackage[outputdir=cache]{minted}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -32,6 +33,15 @@
 \usepackage{url}
 \usepackage[super]{cite}
 \renewcommand\citeform[1]{[#1]}
+
+\newmintedfile[inputGofile]{go}{
+    linenos,
+    breaklines,
+    numbersep=5pt,
+    framesep=2mm,
+    frame=single,
+    tabsize=4
+}
 
 \begin{document}
 
@@ -361,6 +371,7 @@ ICN-URLからハッシュ値を求めるアルゴリズムを述べる．
 \subsubsection{ハッシュアルゴリズムA}
 headsの先頭要素3バイト，tailsの末尾要素3バイト，末尾から3つ目の要素3バイトの各3バイト，計9バイトをそれぞれのバイトごとにXORを計算して3バイトにする．
 headsの先頭1文字と先程の3バイトを連結したものを4バイトのハッシュ値とする．
+具体例をFig \ref{fig:hash_A}に示す．
 
 \begin{figure}[h]
   \centering
@@ -372,6 +383,7 @@ headsの先頭1文字と先程の3バイトを連結したものを4バイトの
 \subsubsection{ハッシュアルゴリズムB}
 headsの先頭要素3バイト，tailsの末尾要素3バイトのそれぞれのバイトごとにXORを計算し，それを連結して2バイトにする．
 headsの先頭1文字と先程の2バイトを連結したものを3バイトのハッシュ値とする．
+具体例をFig \ref{fig:hash_B}に示す．
 
 \begin{figure}[h]
   \centering
@@ -383,6 +395,7 @@ headsの先頭1文字と先程の2バイトを連結したものを3バイトの
 \subsubsection{ハッシュアルゴリズムC}
 headsの先頭要素3バイト，tailsの末尾要素3バイト，末尾から2つ目の要素3バイトのそれぞれのバイトごとにXORを計算し，それを連結して3バイトにする．
 headsの先頭1文字と先程の3バイトを連結したものを4バイトのハッシュ値とする．
+具体例をFig \ref{fig:hash_C}に示す．
 
 \begin{figure}[h]
   \centering
@@ -400,13 +413,32 @@ headsの先頭1文字と先程の3バイトを連結したものを4バイトの
 すなわち，eTLDごとにグループ分けされたハッシュテーブルが得られる(Fig \ref{fig:table}の①)．
 新たなeTLDのグループの出現する位置のアドレスをポインタと呼び，それとeTLDとの対応関係をポインタテーブルと呼ぶ(Fig \ref{fig:table}の②)．
 
-\section{プログラム}
-ハッシュアルゴリズムの検証・URLの構造解析を行うためにシミュレーションプログラムをGolangで作成した．
+\section{解析プログラム}
+Golangにより作成したプログラムの概要を述べる．
 
-
+\subsection{前処理}
+\subsubsection{重複削除}
+入力されたデータの重複を削除する．今回は121GBのデータなのでlinuxのuniqueコマンドでは時間がかかりすぎるため実装した．
+文字数による分割統治法を用いて，分割したデータごとに並行処理を行うことで重複削除の高速化を図った．
+重複削除したら60GB程度になった．
+\subsubsection{サンプル抽出}
+重複のないデータから10MBをランダムに抽出する機能を実装した．
+60GBのデータをメモリ上に展開することはできないので，行番号と先頭からのバイト数のテーブルを作成した．
+これをメモリ上に展開し，乱数により行番号を選択し，対応するファイル位置を求めファイルポインタを移動させてその行を選択しファイルに出力する．
+これを出力したファイルサイズが10MBになるまで繰り返す．
+\subsection{コンテンツ名への変換}
+バッファーに入るだけ読み込んでから並列プロセスに渡して以下の処理をする．
+1行読んでURLの構文解析を行いURLの規格に沿っていないものを除外する．
+Public Suffix Listとドメイン名を照合してeTLDとRootとHostNameを抽出する．
+これを定義したICN-URLの形式に合うように組み立てる．
+\subsection{ハッシュテーブルとポインタテーブル生成}
+バッファーに入るだけ読み込んでから並列プロセスに渡して以下の処理をする．
+ICN-URLから3種類のいずれかのハッシュアルゴリズムによりハッシュ値を計算する．
+ハッシュ値を順に出力する際に，eTLDと出力バイト数の関係をポインタテーブルとして出力する．
+\subsection{衝突数の解析}
+作成したハッシュテーブルの中で同一のハッシュ値となっているものを数え上げ，その件数を出力する．
 
 \chapter{衝突数の検証結果}
-\subsection{ハッシュアルゴリズム}
 \section{URLの分類手法を利用するとき}
 \section{ハッシュとURLの分類手法を併用したとき}
 
