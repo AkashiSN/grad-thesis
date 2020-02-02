@@ -274,7 +274,7 @@ Fig. \ref{fig:ccn_ndn_routing}のテーブルをFig. \ref{fig:ndn_table}に再�
 FIB, PIT, CSの３つのテーブルはNameをキーとしており，その分布を評価することでアルゴリズムの性能を評価する．
 評価のためにFig. \ref{fig:table}に示す手順を行った．
 入手可能な全URLのリスト(All list)から10MB程度のサイズになるようにランダムに抽出したリスト(Sampled list)を作る．
-そのリストでURLの規格に合わないものを除外したのち，ICN-URLに変換しeTLDの頻度の降順に並べる．
+そのリストでURLの規格に合わないものを除外したのち，ICN-URLに変換しeTLDの頻度の多い順に並べる．
 順にICN-URLからハッシュを計算してハッシュテーブルを作成し，ハッシュテーブルの各eTLDの先頭アドレスを保持したポインタテーブルを作成する．
 
 \begin{figure}[h]
@@ -286,7 +286,7 @@ FIB, PIT, CSの３つのテーブルはNameをキーとしており，その分�
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=135mm]{fig/table-crop.pdf}
+  \includegraphics[width=140mm]{fig/table-crop.pdf}
   \caption{Analysis procedure}
   \label{fig:table}
 \end{figure}
@@ -349,13 +349,14 @@ ICN-URLからハッシュ値を求めるアルゴリズムを述べる．
 次に，各セクションから前3文字を抜き出して配列headsとする．
 同様に後3文字を抜き出して配列tailsとする．ただしパティングが含まれているセクションはパディングと元の文字との順序を入れ替える．
 
-
 \begin{figure}[h]
   \centering
   \includegraphics[width=135mm]{fig/hash_separate-crop.pdf}
   \caption{Preparation to make hash．}
   \label{fig:hash_separate}
 \end{figure}
+
+先程作成した配列headsとtailsを元に3種類のハッシュアルゴリズムを考案した．
 
 \subsubsection{ハッシュアルゴリズムA}
 headsの先頭要素3バイト，tailsの末尾要素3バイト，末尾から3つ目の要素3バイトの各3バイト，計9バイトをそれぞれのバイトごとにXORを計算して3バイトにする．
@@ -392,9 +393,12 @@ headsの先頭1文字と先程の3バイトを連結したものを4バイトの
 
 
 \subsection{ハッシュテーブル}
-
-
-
+約10MBのICN-URLに変換された解析データをreTLD（1番目のセクション）の頻度の多い順に並べる．
+これは，eTLDの頻度の多い順と同じである．
+各行のICN-URLに対して上記の3種類のハッシュアルゴリズムの内のどれかにより順にハッシュ値を求め，ハッシュテーブルを作成する．
+このハッシュテーブルには頻度順の同じeTLDに対応するハッシュ値が連続して並んでいる．
+すなわち，eTLDごとにグループ分けされたハッシュテーブルが得られる(Fig \ref{fig:table}の①)．
+新たなeTLDのグループの出現する位置のアドレスをポインタと呼び，それとeTLDとの対応関係をポインタテーブルと呼ぶ(Fig \ref{fig:table}の②)．
 
 \section{プログラム}
 ハッシュアルゴリズムの検証・URLの構造解析を行うためにシミュレーションプログラムをGolangで作成した．
