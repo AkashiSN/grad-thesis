@@ -346,8 +346,8 @@ ICN-URLからハッシュ値を求めるアルゴリズムを述べる．
   \item[セクションが2文字のとき] ICNのスラッシュの数をbyte型として付加する
 \end{description} 
 
-次に，各セクションから前３文字を抜き出して配列headsとする．
-同様に後３文字を抜き出して配列tailsとする．ただしパティングが含まれているセクションはパディングと元の文字との順序を入れ替える．
+次に，各セクションから前3文字を抜き出して配列headsとする．
+同様に後3文字を抜き出して配列tailsとする．ただしパティングが含まれているセクションはパディングと元の文字との順序を入れ替える．
 
 
 \begin{figure}[h]
@@ -357,34 +357,41 @@ ICN-URLからハッシュ値を求めるアルゴリズムを述べる．
   \label{fig:hash_separate}
 \end{figure}
 
+\subsubsection{ハッシュアルゴリズムA}
+headsの先頭要素3バイト，tailsの末尾要素3バイト，末尾から3つ目の要素3バイトの各3バイト，計9バイトをそれぞれのバイトごとにXORを計算して3バイトにする．
+headsの先頭1文字と先程の3バイトを連結したものを4バイトのハッシュ値とする．
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=135mm]{fig/hash_1-crop.pdf}
-  \caption{Preparation to make hash．}
-  \label{fig:hash_separate}
+  \includegraphics[width=120mm]{fig/hash_1-crop.pdf}
+  \caption{Hash algorithm A}
+  \label{fig:hash_A}
 \end{figure}
 
+\subsubsection{ハッシュアルゴリズムB}
+headsの先頭要素3バイト，tailsの末尾要素3バイトのそれぞれのバイトごとにXORを計算し，それを連結して2バイトにする．
+headsの先頭1文字と先程の2バイトを連結したものを3バイトのハッシュ値とする．
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=135mm]{fig/hash_2-crop.pdf}
-  \caption{Preparation to make hash．}
-  \label{fig:hash_separate}
+  \caption{Hash algorithm B}
+  \label{fig:hash_B}
 \end{figure}
 
+\subsubsection{ハッシュアルゴリズムC}
+headsの先頭要素3バイト，tailsの末尾要素3バイト，末尾から2つ目の要素3バイトのそれぞれのバイトごとにXORを計算し，それを連結して3バイトにする．
+headsの先頭1文字と先程の3バイトを連結したものを4バイトのハッシュ値とする．
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=135mm]{fig/hash_3-crop.pdf}
-  \caption{Preparation to make hash．}
-  \label{fig:hash_separate}
+  \caption{Hash algorithm C}
+  \label{fig:hash_C}
 \end{figure}
 
 
-
-\subsubsection{hash}
-\subsubsection{pointer}
+\subsection{ハッシュテーブル}
 
 
 
