@@ -351,7 +351,7 @@ http://wrestlingabrasil.blogspot.com/
 \subsection{ハッシュアルゴリズム}
 ICN-URLからハッシュ値を求めるアルゴリズムを述べる．
 
-まず，Fig \ref{fig:hash_separate}に示すようにICN-URLを"/"で分割する．それぞれをセクション(section)と呼ぶ．
+まず，Fig. \ref{fig:hash_separate}に示すようにICN-URLを"/"で分割する．それぞれをセクション(section)と呼ぶ．
 そのセクションの文字数が3文字未満の場合はセクションの文字数に応じて３文字にする(パディング)．
 
 \begin{description}
@@ -375,7 +375,7 @@ ICN-URLからハッシュ値を求めるアルゴリズムを述べる．
 \subsubsection{ハッシュアルゴリズムA}
 headsの先頭要素3バイト，tailsの末尾要素3バイト，末尾から3つ目の要素3バイトの各3バイト，計9バイトをそれぞれのバイトごとにXORを計算して3バイトにする．
 headsの先頭1文字と先程の3バイトを連結したものを4バイトのハッシュ値とする．
-具体例をFig \ref{fig:hash_A}に示す．
+具体例をFig. \ref{fig:hash_A}に示す．
 
 \begin{figure}[h]
   \centering
@@ -387,7 +387,7 @@ headsの先頭1文字と先程の3バイトを連結したものを4バイトの
 \subsubsection{ハッシュアルゴリズムB}
 headsの先頭要素3バイト，tailsの末尾要素3バイトのそれぞれのバイトごとにXORを計算し，それを連結して2バイトにする．
 headsの先頭1文字と先程の2バイトを連結したものを3バイトのハッシュ値とする．
-具体例をFig \ref{fig:hash_B}に示す．
+具体例をFig. \ref{fig:hash_B}に示す．
 
 \begin{figure}[h]
   \centering
@@ -399,7 +399,7 @@ headsの先頭1文字と先程の2バイトを連結したものを3バイトの
 \subsubsection{ハッシュアルゴリズムC}
 headsの先頭要素3バイト，tailsの末尾要素3バイト，末尾から2つ目の要素3バイトのそれぞれのバイトごとにXORを計算し，それを連結して3バイトにする．
 headsの先頭1文字と先程の3バイトを連結したものを4バイトのハッシュ値とする．
-具体例をFig \ref{fig:hash_C}に示す．
+具体例をFig. \ref{fig:hash_C}に示す．
 
 \begin{figure}[h]
   \centering
@@ -414,8 +414,8 @@ headsの先頭1文字と先程の3バイトを連結したものを4バイトの
 これは，eTLDの頻度の多い順と同じである．
 各行のICN-URLに対して上記の3種類のハッシュアルゴリズムの内のどれかにより順にハッシュ値を求め，ハッシュテーブルを作成する．
 このハッシュテーブルには頻度順の同じeTLDに対応するハッシュ値が連続して並んでいる．
-すなわち，eTLDごとにグループ分けされたハッシュテーブルが得られる(Fig \ref{fig:table}の①)．
-新たなeTLDのグループの出現する位置のアドレスをポインタと呼び，それとeTLDとの対応関係をポインタテーブルと呼ぶ(Fig \ref{fig:table}の②)．
+すなわち，eTLDごとにグループ分けされたハッシュテーブルが得られる(Fig. \ref{fig:table}の①)．
+新たなeTLDのグループの出現する位置のアドレスをポインタと呼び，それとeTLDとの対応関係をポインタテーブルと呼ぶ(Fig. \ref{fig:table}の②)．
 
 \section{解析プログラム}
 Golangにより作成したプログラムの概要を述べる．
@@ -447,7 +447,7 @@ ICN-URLから3種類のいずれかのハッシュアルゴリズムによりハ
 ハッシュアルゴリズムの違いや，新たに提案したポインタを用いるデータ構造による衝突数の分布を調べることで性能を評価する．
 \section{解析データの妥当性}
 全URLリストからランダムに10MB分を抽出した解析データが元の全URLリストの分布と同じ特徴を持っているかを確かめる．
-それぞれのeTLDの頻度分布をFig \ref{graph:sampled_data}に示す．
+それぞれのeTLDの頻度分布をFig. \ref{graph:sampled_data}に示す．
 グラフ中のALL URLsは全URLリスト，Sampled URLsは解析データをそれぞれ示している．
 グラフから解析データは全URLリストとほぼ同じ分布を示しており，全URLリストの特徴を代表していると考えることができる．
 \begin{figure}[h]
@@ -459,9 +459,9 @@ ICN-URLから3種類のいずれかのハッシュアルゴリズムによりハ
 
 \section{eTLDの分布}
 解析データのeTLDの分布を調べる．
-その分布をFig \ref{graph:ratio_of_etld_all}に示す．
-Fig \ref{graph:ratio_of_etld_all}からわかるようにごく少数のeTLDに大半のURLが含まれている．
-そこでFig \ref{graph:ratio_of_etld_detail}とTable \ref{tab:ratio_of_etld_detail}に上位10件の詳細の分布を示す．
+その分布をFig. \ref{graph:ratio_of_etld_all}に示す．
+Fig. \ref{graph:ratio_of_etld_all}からわかるようにごく少数のeTLDに大半のURLが含まれている．
+そこでFig. \ref{graph:ratio_of_etld_detail}とTable \ref{tab:ratio_of_etld_detail}に上位10件の詳細の分布を示す．
 解析データのURLの件数は147,315であり，eTLDの上位10件に含まれるURLの件数は125,161である．
 すなわち上位10件で85\%を占めている．
 この内1位のcomで60\%を占めており，極端に偏っていることがわかる．
@@ -505,7 +505,7 @@ Fig \ref{graph:ratio_of_etld_all}からわかるようにごく少数のeTLDに�
 そして同じ衝突数を持つICN-URLの合計数を求める．
 この合計数の累積のICN-URL総数に対する比率を算出する．これを累積分布と呼ぶ．
 累積分布と1との差の絶対値を相補累積分布と呼ぶ(Complementary Cumulative Distribution Function: CCDF)．
-これをFig \ref{graph:hash_ccdf_A-C}に示す．
+これをFig. \ref{graph:hash_ccdf_A-C}に示す．
 このグラフではある横軸において値が小さい方がより衝突の割合が少ない．
 横軸は同じハッシュ値の数なので1は衝突していないことを意味し，2以上は衝突していることを表す．
 したがって，ハッシュアルゴリズムAが最良であるとわかる．
@@ -517,9 +517,9 @@ Fig \ref{graph:ratio_of_etld_all}からわかるようにごく少数のeTLDに�
 \end{figure}
 
 \section{eTLDごとのハッシュ衝突率}
-Fig \ref{fig:table}のポインタテーブルを用いることで，異なるeTLDは区別されるので1つのeTLDに対するハッシュ値の衝突だけが問題となる．
+Fig. \ref{fig:table}のポインタテーブルを用いることで，異なるeTLDは区別されるので1つのeTLDに対するハッシュ値の衝突だけが問題となる．
 したがって各eTLDについてだけハッシュ値の衝突率を求めればよい．
-Fig \ref{graph:etld_hash_ccdf}に各eTLDごとのハッシュアルゴリズムAのときのハッシュ衝突率を示す．
+Fig. \ref{graph:etld_hash_ccdf}に各eTLDごとのハッシュアルゴリズムAのときのハッシュ衝突率を示す．
 
 グラフよりeTLDが\url{me}のとき衝突しない確率が低くなっていることがわかる．
 \url{formspring.me}というサイトがデータの大半を占めており，\url{icn:/me/formspring/nandaghizzo/q/908453668}のようなICN-URLの形式である．
@@ -527,7 +527,6 @@ Fig \ref{graph:etld_hash_ccdf}に各eTLDごとのハッシュアルゴリズムA
 これは投稿などのIDだと考えられるので連番である可能性が高い．
 このことから1000件に1回は衝突することになり，今回\url{me}の件数は7720件であったため，
 最大でも7回の衝突のみとなり結果的に数件の衝突に集中した．
-
 他のeTLDについてはALL eTLDと近い傾向を示した．
 \begin{figure}[p]
   \centering
@@ -536,18 +535,52 @@ Fig \ref{graph:etld_hash_ccdf}に各eTLDごとのハッシュアルゴリズムA
   \label{graph:etld_hash_ccdf}
 \end{figure}
 
-\section{分割のキーにrootを含めたときのキーの割合}
+\section{eTLDにRootを加えた場合の分布}
+eTLDのみだと母数が大きいので細分化するために次の3種の規則によりRootをeTLDに追加する．
+\begin{enumerate}
+  \item comのときのRootの出現回数が10のRootをeTLDに加える(Fig. \ref{graph:ratio_of_pointer_all}, \ref{graph:ratio_of_pointer_detail}の赤線)．
+  \item comのときのRootの出現回数の多い順の上位256をeTLDに加える(Fig. \ref{graph:ratio_of_pointer_all}の青線)．
+  \item 2.に加えnetの上位256も加える(Fig. \ref{graph:ratio_of_pointer_all}の緑線)．
+\end{enumerate}
+
+Fig. \ref{graph:ratio_of_pointer_all}から加えるRoot部の数が多いほどポインタの数が増加することがわかる．
+ので上記1の規則について詳しく見るためにFig. \ref{graph:ratio_of_pointer_detail}とTable \ref{tab:ratio_of_pointer_detail}に出現確率の多い上位10件のポインタを示す．
+グラフから\url{twitter.com}と\url{google.com}が上位に入っていることがわかる．
+そして，\url{com}が占める割合が60\%から25\%に減ったことにより，衝突確率が下がることが期待できる．
+
+\begin{table}[h]
+  \centering
+  \caption{Top 10 of eTLD+Root, URL count and probability in the sampled URLs (147,315)．}
+  \label{tab:ratio_of_pointer_detail}
+  \begin{tabular}{@{}crrr@{}}
+  \toprule
+  ID & \multicolumn{1}{c}{eTLD+Root} & \multicolumn{1}{c}{URL count} & \multicolumn{1}{c}{Probability{[}\%{]}} \\ \midrule
+  0 & com & 36423 & 24.7246 \\
+  1 & net & 8285 & 5.624 \\
+  2 & me & 7720 & 5.2405 \\
+  3 & org & 5201 & 3.5305 \\
+  4 & twitter.com & 4357 & 2.9576 \\
+  5 & de & 3301 & 2.2408 \\
+  6 & google.com & 3092 & 2.0989 \\
+  7 & blogspot.com & 2667 & 1.8104 \\
+  8 & jp & 2644 & 1.7948 \\
+  9 & co.uk & 2576 & 1.7486 \\ \bottomrule
+  \end{tabular}
+\end{table}
+
 \begin{figure}[h]
   \centering
-  \includegraphics[scale=0.65]{graph/ratio_of_pointer/ratio_of_pointer_all-crop.pdf}
-  \caption{}
-  \label{graph:ratio_of_etld_all}
+  \includegraphics[scale=0.6]{graph/ratio_of_pointer/ratio_of_pointer_all-crop.pdf}
+  \caption{Probability of appearance of eTLD or eTLD + Root．Black line shows only eTLD．
+  Red line shows eTLD + Root when number of appearance of Root is more than 10 in eTLD of com．
+  Blue and green lines show eTLD + Root when top 256 most frequently appearing Root in eTLD of com, com and net, respectively．}
+  \label{graph:ratio_of_pointer_all}
 \end{figure}
 \begin{figure}[h]
   \centering
-  \includegraphics[scale=0.65]{graph/ratio_of_pointer/ratio_of_pointer_detail-crop.pdf}
-  \caption{}
-  \label{graph:ratio_of_etld_detail}
+  \includegraphics[scale=0.6]{graph/ratio_of_pointer/ratio_of_pointer_detail-crop.pdf}
+  \caption{Detail of Fig. \ref{graph:ratio_of_pointer_all} of red line and black line (top 10 of pointer)．}
+  \label{graph:ratio_of_pointer_detail}
 \end{figure}
 
 
@@ -555,7 +588,7 @@ Fig \ref{graph:etld_hash_ccdf}に各eTLDごとのハッシュアルゴリズムA
 \begin{figure}[h]
   \centering
   \includegraphics[scale=0.65]{graph/pointer_hash_ccdf/pointer-hash-ccdf-crop.pdf}
-  \caption{}
+  \caption{Complementary cumulative distribution function of same hash value for each eTLD when hash algorith A．}
   \label{graph:etld_hash_ccdf}
 \end{figure}
 

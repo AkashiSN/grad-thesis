@@ -35,7 +35,7 @@ new axis name:fX1
 	axis::redraw_flag=true
 	axis::min=-5.000000000000000e-01
 	axis::max=1.000000000000000e+01
-	axis::inc=5.000000000000000e+00
+	axis::inc=1.000000000000000e+00
 	axis::div=0
 	axis::type=linear
 	axis::x=3600
@@ -70,9 +70,9 @@ new axis name:fX1
 	axis::gauge_B=0
 	axis::gauge_A=255
 	axis::num=right
-	axis::num_begin=1
+	axis::num_begin=0
 	axis::num_step=1
-	axis::num_num=-1
+	axis::num_num=10
 	axis::num_auto_norm=5
 	axis::num_head=
 	axis::num_format='%g'
@@ -793,8 +793,8 @@ new text
 	text::A=255
 	text::clip=true
 	text::redraw_flag=true
-	text::text='ID number of pointer'
-	text::x=7000
+	text::text='Kind of pointers'
+	text::x=8000
 	text::y=24000
 	text::pt=2000
 	text::font='Sans-serif'
@@ -812,9 +812,9 @@ new text
 	text::A=255
 	text::clip=true
 	text::redraw_flag=true
-	text::text='Ratio of appearance [\%]'
+	text::text='Probability of appearance [\%]'
 	text::x=1800
-	text::y=19000
+	text::y=19600
 	text::pt=2000
 	text::font='Sans-serif'
 	text::style=0
