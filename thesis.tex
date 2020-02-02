@@ -82,6 +82,7 @@
 % ------------------------------------------------------
 
 \pagenumbering{roman}
+\setcounter{tocdepth}{2}
 \tableofcontents
 
 \clearpage
@@ -262,7 +263,7 @@ icn:/<reTLD>/<Root>/<rHostName>/<Path>
 Fig. \ref{fig:icn_url_structure}に具体例を示す．
 \begin{figure}[h]
   \centering
-  \includegraphics[width=80mm]{fig/icn_url_structure-crop.pdf}
+  \includegraphics[width=90mm]{fig/icn_url_structure-crop.pdf}
   \caption{Example of ICN-URL}
   \label{fig:icn_url_structure}
 \end{figure}
@@ -273,8 +274,9 @@ Fig. \ref{fig:ccn_ndn_routing}のテーブルをFig. \ref{fig:ndn_table}に再�
 FIB, PIT, CSの３つのテーブルはNameをキーとしており，その分布を評価することでアルゴリズムの性能を評価する．
 評価のためにFig. \ref{fig:table}に示す手順を行った．
 入手可能な全URLのリスト(All list)から10MB程度のサイズになるようにランダムに抽出したリスト(Sampled list)を作る．
-そのリストのURLからICN-URLに変換しeTLDの頻度の降順に並べる．
+そのリストでURLの規格に合わないものを除外したのち，ICN-URLに変換しeTLDの頻度の降順に並べる．
 順にICN-URLからハッシュを計算してハッシュテーブルを作成し，ハッシュテーブルの各eTLDの先頭アドレスを保持したポインタテーブルを作成する．
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=50mm]{fig/ndn_table-crop.pdf}
@@ -284,14 +286,14 @@ FIB, PIT, CSの３つのテーブルはNameをキーとしており，その分�
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=120mm]{fig/table-crop.pdf}
-  \caption{}
+  \includegraphics[width=135mm]{fig/table-crop.pdf}
+  \caption{Analysis procedure}
   \label{fig:table}
 \end{figure}
 
 
-\section{解析データ}
-シミュレーションに用いるデータとして，The Content Name Collection\footnote{\url{http://www.icn-names.net/} にて"The Content Name Collection"というバーゼル大学による情報指向ネットワークのためのデータセットが2019年10月まで公開されていたが，ドメインの有効期限切れのため現在は全く関係のない中国の会社によりドメインが取得されている．}
+\subsection{解析データ}
+解析に用いるデータとして，The Content Name Collection\footnote{\url{http://www.icn-names.net/} にて"The Content Name Collection"というバーゼル大学による情報指向ネットワークのためのデータセットが2019年10月まで公開されていたが，ドメインの有効期限切れのため現在は全く関係のない中国の会社によりドメインが取得されている．}
 で公開されている情報指向ネットワークのための膨大なURLのデータセットを用いる．
 そのデータセットの内の一つである\url{urls.txt}を使う．
 \url{urls.txt}はFig. \ref{fig:urls_txt_10}のように改行で区別されているURLのリストになっている．
@@ -328,22 +330,69 @@ http://wrestlingabrasil.blogspot.com/
   \end{tabular}
 \end{table}
 
+\url{urls.txt}の前処理として以下の工程を行う．
+このデータには重複が含まれているので重複を削除し，各CRでの実際的なURLは10MBほどであるという仮定のうえ，ランダムな10MBを抽出し，解析データとした．
+ここには約14万件のURLが含まれる．
+この解析データ中の各URLをICN-URLに変換する．
+
+\subsection{ハッシュアルゴリズム}
+ICN-URLからハッシュ値を求めるアルゴリズムを述べる．
+
+まず，Fig \ref{fig:hash_separate}に示すようにICN-URLを"/"で分割する．それぞれをセクション(section)と呼ぶ．
+そのセクションの文字数が3文字未満の場合はセクションの文字数に応じて３文字にする(パディング)．
+
+\begin{description}
+  \item[セクションが1文字のとき] ICNの長さとスラッシュの数を掛けたものをuint16型で付加する
+  \item[セクションが2文字のとき] ICNのスラッシュの数をbyte型として付加する
+\end{description} 
+
+次に，各セクションから前３文字を抜き出して配列headsとする．
+同様に後３文字を抜き出して配列tailsとする．ただしパティングが含まれているセクションはパディングと元の文字との順序を入れ替える．
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=135mm]{fig/hash_separate-crop.pdf}
+  \caption{Preparation to make hash．}
+  \label{fig:hash_separate}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=135mm]{fig/hash_1-crop.pdf}
+  \caption{Preparation to make hash．}
+  \label{fig:hash_separate}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=135mm]{fig/hash_2-crop.pdf}
+  \caption{Preparation to make hash．}
+  \label{fig:hash_separate}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=135mm]{fig/hash_3-crop.pdf}
+  \caption{Preparation to make hash．}
+  \label{fig:hash_separate}
+\end{figure}
+
+
+
+\subsubsection{hash}
+\subsubsection{pointer}
+
+
+
 
 \section{プログラム}
 ハッシュアルゴリズムの検証・URLの構造解析を行うためにシミュレーションプログラムをGolangで作成した．
 
-\url{urls.txt}の前処理として以下の工程を行う．
-\begin{enumerate}
-  \item このデータには重複が含まれているので重複を削除する．
-  \item 各CRでの実際的なURLは10MBほどであるという仮定のうえ，ランダムな10MBごとのサンプルを抽出する．
-\end{enumerate}
 
-
-
-
-\section{コンテンツ名への変換}
-
-\section{ハッシュアルゴリズム}
 
 \chapter{衝突数の検証結果}
 \subsection{ハッシュアルゴリズム}
