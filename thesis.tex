@@ -438,11 +438,44 @@ ICN-URLから3種類のいずれかのハッシュアルゴリズムによりハ
 \subsection{衝突数の解析}
 作成したハッシュテーブルの中で同一のハッシュ値となっているものを数え上げ，その件数を出力する．
 
-\chapter{衝突数の検証結果}
-\section{URLの分類手法を利用するとき}
-\section{ハッシュとURLの分類手法を併用したとき}
+\chapter{性能評価}
+\section{データの抽出}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=120mm]{graph/sampled_data/sampled_data-crop.pdf}
+  \caption{}
+  \label{graph:sampled_data}
+\end{figure}
+
+\section{eTLDの割合}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=120mm]{graph/ratio_of_etld/ratio_of_etld_all-crop.pdf}
+  \caption{}
+  \label{graph:ratio_of_etld_all}
+\end{figure}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=120mm]{graph/ratio_of_etld/ratio_of_etld_detail-crop.pdf}
+  \caption{}
+  \label{graph:ratio_of_etld_detail}
+\end{figure}
+
+\section{全件に対してハッシュ衝突数}
+\section{eTLDごとに分割したときにハッシュ衝突数}
+\section{分割のキーにrootを含めたときのキーの割合}
+\section{キーで分割したときのハッシュの衝突数}
+\section{キーに含めたものとeTLDのもので別のハッシュアルゴリズム}
+
+\section{検討}
+
+\chapter{結論}
+
+\chapter*{謝辞}
 
 \bibliography{thesis}
 \bibliographystyle{junsrt}
+
+\appendix{コード}
 
 \end{document}
