@@ -80,7 +80,7 @@ new axis name:fX1
 	axis::num_log_pow=true
 	axis::num_pt=2000
 	axis::num_space=0
-	axis::num_font='Sans-serif'
+	axis::num_font='Serif'
 	axis::num_font_style=0
 	axis::num_script_size=7000
 	axis::num_align=center
@@ -150,7 +150,7 @@ new axis name:fY1
 	axis::num_log_pow=true
 	axis::num_pt=2000
 	axis::num_space=0
-	axis::num_font='Sans-serif'
+	axis::num_font='Serif'
 	axis::num_font_style=0
 	axis::num_script_size=7000
 	axis::num_align=right
@@ -603,7 +603,7 @@ new text
 	text::x=7000
 	text::y=24000
 	text::pt=2000
-	text::font='Sans-serif'
+	text::font='Serif'
 	text::style=0
 	text::space=0
 	text::direction=0
@@ -622,7 +622,7 @@ new text
 	text::x=1800
 	text::y=20400
 	text::pt=2000
-	text::font='Sans-serif'
+	text::font='Serif'
 	text::style=0
 	text::space=0
 	text::direction=9000
@@ -641,7 +641,7 @@ new text
 	text::x=7200
 	text::y=15440
 	text::pt=2000
-	text::font='Sans-serif'
+	text::font='Serif'
 	text::style=0
 	text::space=0
 	text::direction=0
@@ -660,7 +660,7 @@ new text
 	text::x=8640
 	text::y=16260
 	text::pt=2000
-	text::font='Sans-serif'
+	text::font='Serif'
 	text::style=0
 	text::space=0
 	text::direction=0
@@ -679,7 +679,7 @@ new text
 	text::x=6040
 	text::y=9080
 	text::pt=2000
-	text::font='Sans-serif'
+	text::font='Serif'
 	text::style=0
 	text::space=0
 	text::direction=0
@@ -698,7 +698,7 @@ new text
 	text::x=4800
 	text::y=20620
 	text::pt=2000
-	text::font='Sans-serif'
+	text::font='Serif'
 	text::style=0
 	text::space=0
 	text::direction=0
@@ -717,7 +717,7 @@ new text
 	text::x=9520
 	text::y=17060
 	text::pt=2000
-	text::font='Sans-serif'
+	text::font='Serif'
 	text::style=0
 	text::space=0
 	text::direction=0
@@ -736,7 +736,7 @@ new text
 	text::x=10520
 	text::y=18460
 	text::pt=2000
-	text::font='Sans-serif'
+	text::font='Serif'
 	text::style=0
 	text::space=0
 	text::direction=0
