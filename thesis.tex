@@ -2,7 +2,7 @@
 % preamble
 % ------------------------------------------------------
 
-\documentclass[autodetect-engine, dvipdfmx-if-dvi, a4paper, ja=standard, 10pt, textwidth-limit=45]{bxjsbook}
+\documentclass[autodetect-engine, dvipdfmx-if-dvi, a4paper, ja=standard, 10pt, textwidth-limit=45, openany]{bxjsbook}
 
 \usepackage{ifthen}
 \usepackage{ifxetex,ifluatex,ifuptex}
@@ -600,13 +600,39 @@ Fig \ref{graph:pointer_hash_ccdf}にeTDLにRootを加えたときと，加えて
 \section{まとめ}
 ハッシュアルゴリズムAのような3回のXORを行うだけの軽量な計算負荷で求まる4バイトのハッシュ値でも，
 ポインタテーブルを併用することにより5回以上の衝突確率を0.3\%に抑えることができる．
+
+
 \chapter{結論}
+本論文のICNのルーティングのためのURLのクラシフィケーションついてシミュレーションを用いて解析検討した結果をまとめ，結論とする．
+
+\begin{enumerate}
+  \item 3通りのハッシュアルゴリズムを提案した．ICN-URLを"/"で分割し，3バイトの文字列を切り出し，
+      そのうちの2--3の文字列どおしのXOR演算から3バイトから4バイトのハッシュ値を生成した．
+      このハッシュ値とICN-URLの対応をハッシュテーブルとして作成し，衝突確率を求めた．
+  \item 衝突数を軽減するためにポインタを併用したハッシュ作成アルゴリズムを提案した．
+  URLのeTLDの分布を調べることにより，\url{com}が60\%占めていて偏りが大きいことがわかった．
+  そのため衝突率が大きくなっていた．
+  \item eTLDにRootを加えることで偏りが大きかった\url{com}の占める割合を24\%に下げることで衝突確率を0.3\%に抑えることができた．
+\end{enumerate}
+
+\subsection*{今後の課題}
+\begin{enumerate}
+  \item ハッシュアルゴリズムが簡易的なものだったので，eTLDをRootに加えた際にハッシュ値への寄与はなかった．
+        そこで，eTLDをRootに加えた際にハッシュ値が変化するようなハッシュアルゴリズムの改良をする．
+\end{enumerate}
+
 
 \chapter*{謝辞}
+本研究を進めるにあたり，ご指導いただいた指導教員の井上一成教授に感謝いたします．
+御助言を頂いた共同研究先の国立研究開発法人情報通信研究機構の大岡睦氏に感謝の意を表します．
 
 \bibliography{thesis}
 \bibliographystyle{junsrt}
 
-\appendix{コード}
+
+\appendix
+\def\thesection{付録}
+\chapter{コード}
+コードの抜粋を後で貼る予定です．
 
 \end{document}
