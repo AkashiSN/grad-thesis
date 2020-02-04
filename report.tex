@@ -2,18 +2,21 @@
 % preamble
 % ------------------------------------------------------
 
-\documentclass[autodetect-engine, dvipdfmx-if-dvi, a4paper, ja=standard, 10pt, twocolumn]{bxjsarticle}
+\documentclass[twocolumn,9pt]{ujarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[top=3cm, bottom=2.7cm, left=1.8cm, right=1.8cm]{geometry}
 
-\input{preamble/resume}
+\input{preamble/report}
 
-% ------------------------------------------------------
-% body
-% ------------------------------------------------------
+\title{DNSキャッシュの高速化とURL符号化}
+\author{$西総一朗^{*}$，井上一成(明石高専)}
+% english title / author
+\entitle{Accelerate DNS Cache and URL Encoding.}
+\enauthor{Soichiro Nishi$^{*}$，Kazunari Inoue (NIT，Akashi Collage)}
+\date{\hfill}
 
 \begin{document}
 
-\title{URLの情報指向型クラシフィケーション}
-\author{指導教員：井上 一成　発表者：E1533 西 総一朗}
 \maketitle
 \thispagestyle{empty}
 
@@ -23,5 +26,12 @@
 
 そこで,このような問題を解決するために研究されている技術の一つとして情報指向型ネットワーク:\ Information-Centric-Networking (ICN) \cite{icn}がある.
 情報指向型ネットワークとは,従来のIPネットワークのようにどのサーバからコンテンツを取得するかというロケーションオリエンテッドな通信ではなく,どのコンテンツを取得するかをコンテンツ名で指定し,コンテンツの発見と転送をコンテンツセントリックな方法で行う手法である.
+
+
+\fontsize{8pt}{12pt}\selectfont
+\begin{thebibliography}{9}
+  \bibitem{icn} 朝枝仁, 松園和久 : コンピュータソフトウェア, Vol.~33, No.~3, pp. 3\_3--3\_15, (2016).
+  \vspace{-1em}
+\end{thebibliography}
 
 \end{document}

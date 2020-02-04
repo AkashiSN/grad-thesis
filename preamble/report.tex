@@ -1,0 +1,166 @@
+\usepackage{caption}
+\usepackage{url}
+\usepackage{here}
+\usepackage{enumitem}
+\usepackage{empheq}
+\usepackage{amsmath}
+\usepackage{mathptmx}
+
+%% nearly equals
+\newcommand{\near}{\:\approx\:}
+%% UNIT in Formula
+\newcommand{\unit}[1]{\:\textrm{#1}}
+%% differencial
+\newcommand{\df}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
+%% differencial second
+\newcommand{\dfs}[2]{\frac{\mathrm{d}^2#1}{\mathrm{d}#2^2}}
+%% (hoge)
+\newcommand{\paren}[1]{\left(#1\right)}
+%% (hoge)
+\newcommand{\sbra}[1]{\mleft\lbrack#1\mright\rbrack}
+%% |hoge|
+\newcommand{\abs}[1]{\mleft|#1\mright|}
+
+\newcommand{\norm}[1]{\mleft\|#1\mright\|}
+%% (hoge|fuga)
+\newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+\newcommand{\agivenbp}[2]{\mleft(#1\relmiddle|#2\mright)}
+
+\DeclareMathOperator*{\argmax}{arg~max}
+\DeclareMathOperator*{\argmin}{arg~min}
+\DeclareMathOperator{\tr}{tr}
+\let\Re\relax
+\DeclareMathOperator{\Re}{Re}
+
+% section config
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}.}
+
+% enumitem config
+\setlist[enumerate,1]{label= (\arabic*)}
+\setlist[enumerate,2]{label= (\alph*)}
+
+%% Hyphenation setting
+\hyphenpenalty=1000\relax
+\exhyphenpenalty=1000\relax
+\sloppy
+
+\pagestyle{empty}
+
+% 行数, カラム間の幅指定
+\setlength{\columnsep}{7mm}
+\setlength{\textheight}{46\baselineskip}
+\addtolength{\textheight}{\topskip}
+
+\setlength{\smallskipamount}{0.8mm}
+\setlength{\medskipamount}{1.4mm}
+\setlength{\bigskipamount}{2.2mm}
+
+\setlength\abovecaptionskip{1pt}
+\setlength\intextsep{5pt}
+\setlength\textfloatsep{1pt}
+\setlength\floatsep{1pt}
+
+\makeatletter
+
+% title
+\global\let\@entitle\@empty
+\global\let\entitle\relax
+\global\let\@enauthor\@empty
+\global\let\enauthor\relax
+\long\def\entitle#1{\long\gdef\@entitle{#1}}
+\long\def\enauthor#1{\long\gdef\@enauthor{#1}}
+
+\renewcommand{\@maketitle}{\newpage
+\begin{center}
+{\fontsize{18pt}{28pt}\selectfont \@title  \par} \vskip 28pt % japanese title
+{\fontsize{12pt}{18pt}\selectfont \@author \par} \vskip 18pt % japanese author
+{\fontsize{9pt}{14pt}\selectfont
+   \begin{tabular}[t]{c}
+      \@entitle \\ % english title
+      \@enauthor % english author
+   \end{tabular}
+   \par}
+{\@date}
+\end{center}
+\vskip 10pt
+\par
+}
+
+% sections
+\renewcommand\section{\@startsection {section}{1}%
+{\z@}%   インデント大きさ（長さを指定）
+{0.8ex}% 見出しの前のスペース（長さを指定）
+{0.8ex}% 見出しの後のスペース（長さを指定）
+{\normalfont\fontsize{10pt}{20pt}\selectfont\bfseries}}% 見出しの書式
+
+\renewcommand\subsection{\@startsection {subsection}{1}%
+{\z@}%   インデント大きさ（長さを指定）
+{0.8ex}% 見出しの前のスペース（長さを指定）
+{0.8ex}% 見出しの後のスペース（長さを指定）
+{\normalfont\fontsize{10pt}{20pt}\selectfont\bfseries}}% 見出しの書式
+
+\renewcommand\subsubsection{\@startsection {subsubsection}{1}%
+{\z@}%   インデント大きさ（長さを指定）
+{0.8ex}% 見出しの前のスペース（長さを指定）
+{0.8ex}% 見出しの後のスペース（長さを指定）
+{\normalfont\fontsize{10pt}{20pt}\selectfont\bfseries}}% 見出しの書式
+
+\renewenvironment{itemize}{%
+   \begin{list}{$\bullet$\ \ }% 見出し記号／直後の空白を調節
+   {%
+      \setlength{\itemindent}{0pt}%
+      \setlength{\leftmargin}{2.5zw}%  左のインデント
+      \setlength{\rightmargin}{0zw}%   右のインデント
+      \setlength{\labelsep}{0zw}%      黒丸と説明文の間
+      \setlength{\labelwidth}{3zw}%    ラベルの幅
+      \setlength{\itemsep}{0em}%       項目ごとの改行幅
+      \setlength{\parsep}{0em}%        段落での改行幅
+      \setlength{\listparindent}{0zw}% 段落での一字下り
+   }}{%
+   \end{list}%
+}
+
+% キャプションの英語併記
+\captionsetup[figure]{format=plain, labelformat=simple, labelsep=quad, font=footnotesize}
+\captionsetup[table]{format=plain, labelformat=simple, labelsep=quad, font=footnotesize}
+\def\fnum@Jfigure{図}
+\def\fnum@Efigure{Fig.}
+\def\fnum@Jtable{表}
+\def\fnum@Etable{Table}
+
+\long\def\@emakecaption#1#2{%
+%% \vskip\abovecaptionskip
+  \iftdir\sbox\@tempboxa{#1\hskip1zw#2}%
+    \else\sbox\@tempboxa{#1.\quad #2}%
+  \fi
+  \ifdim \wd\@tempboxa >\hsize
+    \iftdir #1\hskip2zw#2\relax\par
+      \else #1.\quad #2\relax\par\fi
+  \else
+    \global \@minipagefalse
+    \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+
+\long\def\@caption#1[#2]#3#4{%
+  \par
+  \addcontentsline{\csname ext@#1\endcsname}{#1}%
+    {\protect\numberline{\csname the#1\endcsname}{\ignorespaces #2}}%
+  \begingroup
+    \@parboxrestore
+    \if@minipage
+      \@setminipage
+    \fi
+    \footnotesize
+    \@makecaption{\csname fnum@J\@captype\endcsname \csname the\@captype\endcsname}{\ignorespaces #3}\par
+    \@emakecaption{\csname fnum@E\@captype\endcsname \csname the\@captype\endcsname}{\ignorespaces #4}\par
+ \endgroup}
+
+% bibliography
+\renewcommand{\refname}{\centering
+\fontsize{8pt}{12pt}\selectfont
+{\rm 文献} \\
+\vspace{-1em}
+\hrulefill}
+
+\makeatother

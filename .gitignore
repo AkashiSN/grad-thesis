@@ -9,3 +9,7 @@ thesis.*
 resume.*
 !resume.tex
 !resume.pdf
+
+report.*
+!report.tex
+!report.pdf

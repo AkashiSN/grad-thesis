@@ -1,0 +1,77 @@
+\usepackage{ifthen}
+\usepackage{ifxetex,ifluatex,ifuptex}
+
+\ifthenelse{\boolean{xetex}}{
+  % XeLaTeXの時
+}{\ifthenelse{\boolean{luatex}}{
+  % LuaLaTeXの時
+  \usepackage{luatexja}
+}{\ifthenelse{\boolean{upTeX}}{
+  % upLaTeXの時
+}{%else (pLaTeXと仮定する)
+  % pLaTeX の時
+}}}
+
+\renewcommand{\figurename}{Fig. }
+\renewcommand{\tablename}{Table }
+
+\usepackage[outputdir=cache]{minted}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs=true}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{fancyvrb}
+\usepackage{url}
+\usepackage[super]{cite}
+\renewcommand\citeform[1]{[#1]}
+
+\newmintedfile[inputGofile]{go}{
+    linenos,
+    breaklines,
+    numbersep=5pt,
+    framesep=2mm,
+    frame=single,
+    tabsize=4
+}
+
+\makeatletter
+\newcommand{\subtitle}[1]{\def\@subtitle{#1}}
+\newcommand{\institute}[1]{\def\@institute{#1}}
+\newcommand{\supervisor}[1]{\def\@supervisor{#1}}
+\renewcommand{\maketitle}{
+  \begin{center}
+    \vspace{4cm}
+    {\huge
+      \@subtitle
+    }
+
+    \vspace{1.5cm}
+    {\Huge
+      \@title
+    }
+
+    \vspace{13cm}
+    {\huge
+      \@date
+    }
+
+    \vspace{1.0cm}
+    {\huge
+      \@supervisor
+    }
+
+    \vspace{1.0cm}
+    {\huge
+      \@institute
+    }
+
+    \vspace{0.6cm}
+    {\huge
+      \@author
+    }
+  \end{center}
+}
+\makeatother

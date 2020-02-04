@@ -1,0 +1,99 @@
+%%%
+% 【指定書式】
+%%%
+% ・A4用紙
+% ・2段組（段間隔5mm程度）
+% ・10.5ptあるいは11pt
+% ・上下25mm，左右20mm程度
+% ・45行，文字数は標準
+%%%
+
+\usepackage{ifthen}
+\usepackage{ifxetex,ifluatex,ifuptex}
+
+\ifthenelse{\boolean{xetex}}{
+  % XeLaTeXの時
+}{\ifthenelse{\boolean{luatex}}{
+  % LuaLaTeXの時
+  \usepackage{luatexja}
+  \usepackage{geometry}
+}{\ifthenelse{\boolean{upTeX}}{
+  % upLaTeXの時
+}{%else (pLaTeXと仮定する)
+  % pLaTeX の時
+}}}
+
+\setpagelayout*{top=2.5truecm, bottom=2.5truecm, left=2truecm, right=2truecm}
+
+\setlength{\columnsep}{5mm}
+\pagestyle{empty}
+
+%%%
+% 【スタイル調整】
+%%%
+% ・タイトルの上につく余白をなくす
+% ・見出しの上下につく余白を0.5行分のサイズにする
+% ・表のキャプションの下につく余白を0.5行分のサイズにする
+% ・脚注番号の前にスターを付ける（e.g. *1）
+% ・箇条書きの行間を詰める
+% ・図のセンタリング
+% ・表のセンタリング
+% ・ハイパーリンク
+%%%
+\makeatletter
+\renewcommand{\@maketitle}{
+  \begin{center}
+    {\LARGE \@title \par}
+    \vskip 1.5em
+    {\large \lineskip .5em
+      \begin{tabular}[t]{c}
+        \@author
+      \end{tabular}
+      \par
+    }
+  \end{center}
+  \par
+  \vskip 1.5em
+}
+\makeatother
+
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+  {-2.0ex \@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus.2ex}%
+  {\normalfont\Large\bfseries}%
+}
+\renewcommand\subsection{\@startsection {subsection}{2}{\z@}%
+  {-2.0ex \@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus.2ex}%
+  {\normalfont\large\bfseries}%
+}
+\renewcommand\subsubsection{\@startsection {subsubsection}{3}{\z@}%
+  {-2.0ex \@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus.2ex}%
+  {\normalfont\normalsize\bfseries}%
+}
+\makeatother
+
+\renewcommand{\thefootnote}{*\arabic{footnote}}
+
+\let\oldenumerate\enumerate
+\renewcommand{\enumerate}{
+  \oldenumerate
+  \setlength{\itemsep}{0pt}
+  \setlength{\parskip}{0pt}
+}
+
+\let\olditemize\itemize
+\renewcommand{\itemize}{
+  \olditemize
+  \setlength{\itemsep}{0pt}
+  \setlength{\parskip}{0pt}
+}
+
+\let\oldtable\table
+\let\endoldtable\endtable
+\renewenvironment{table}{\oldtable}{
+  \centering
+  \endoldtable
+}

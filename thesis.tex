@@ -4,83 +4,7 @@
 
 \documentclass[autodetect-engine, dvipdfmx-if-dvi, a4paper, ja=standard, 10pt, textwidth-limit=45]{bxjsreport}
 
-\usepackage{ifthen}
-\usepackage{ifxetex,ifluatex,ifuptex}
-
-\ifthenelse{\boolean{xetex}}{
-  % XeLaTeXの時
-}{\ifthenelse{\boolean{luatex}}{
-  % LuaLaTeXの時
-  \usepackage{luatexja}
-}{\ifthenelse{\boolean{upTeX}}{
-  % upLaTeXの時
-}{%else (pLaTeXと仮定する)
-  % pLaTeX の時
-}}}
-
-\renewcommand{\figurename}{Fig. }
-\renewcommand{\tablename}{Table }
-
-\usepackage[outputdir=cache]{minted}
-\usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\mathtoolsset{showonlyrefs=true}
-\usepackage{siunitx}
-\usepackage{booktabs}
-\usepackage{fancyvrb}
-\usepackage{url}
-\usepackage[super]{cite}
-\renewcommand\citeform[1]{[#1]}
-
-\newmintedfile[inputGofile]{go}{
-    linenos,
-    breaklines,
-    numbersep=5pt,
-    framesep=2mm,
-    frame=single,
-    tabsize=4
-}
-
-\makeatletter
-\newcommand{\subtitle}[1]{\def\@subtitle{#1}}
-\newcommand{\institute}[1]{\def\@institute{#1}}
-\newcommand{\supervisor}[1]{\def\@supervisor{#1}}
-\renewcommand{\maketitle}{
-  \begin{center}
-    \vspace{4cm}
-    {\huge
-      \@subtitle
-    }
-
-    \vspace{1.5cm}
-    {\Huge
-      \@title
-    }
-
-    \vspace{13cm}
-    {\huge
-      \@date
-    }
-
-    \vspace{1.0cm}
-    {\huge
-      \@supervisor
-    }
-
-    \vspace{1.0cm}
-    {\huge
-      \@institute
-    }
-
-    \vspace{0.6cm}
-    {\huge
-      \@author
-    }
-  \end{center}
-}
-\makeatother
+\input{preamble/thesis}
 
 \subtitle{令和元年度卒業研究論文}
 \title{URLの情報指向型クラシフィケーション}
@@ -459,7 +383,7 @@ ICN-URLから3種類のいずれかのハッシュアルゴリズムによりハ
 ハッシュ値を順に出力する際に，eTLDと出力バイト数の関係をポインタテーブルとして出力する．
 \subsection{衝突数の解析}
 作成したハッシュテーブルの中で同一のハッシュ値となっているものを数え上げ，その件数を出力する．
-また同一のハッシュ値の数が同のような分布となっているかを確認するために相補累積分布を出力する．
+また同一のハッシュ値の数がどのような分布となっているかを確認するために相補累積分布を出力する．
 
 
 \chapter{性能評価}
@@ -528,6 +452,8 @@ Fig. \ref{graph:ratio_of_etld_all}からわかるようにごく少数のeTLDに
 このグラフではある横軸において値が小さい方がより衝突の割合が少ない．
 横軸は同じハッシュ値の数なので1は衝突していないことを意味し，2以上は衝突していることを表す．
 したがって，ハッシュアルゴリズムAが最良であるとわかる．
+4回程度の衝突ではハードウェアで処理可能だが，それ以上になるとソフトウェアで処理しなければならなくなるという仮定を行っている．
+そのため，ハッシュアルゴリズムの評価の基準として4回衝突のところで縦の補助線を引いてある．
 \begin{figure}
   \centering
   \includegraphics[scale=0.6]{graph/hash_ccdf/hash_A_C_ccdf-crop.pdf}
