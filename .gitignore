@@ -1,5 +1,6 @@
 .DS_Store
 *.fls
+/cache/
 
 thesis.*
 !thesis.tex

@@ -588,8 +588,33 @@ Fig \ref{graph:pointer_hash_ccdf}にeTDLにRootを加えたときと，加えて
 
 
 \appendix
-\def\thesection{付録}
-\chapter{コード}
-コードの抜粋を後で貼る予定です．
+\chapter{作成したプログラム}
+作成したプログラムの一部を付録として記載する．
+
+\section{重複を削除する}
+文字列の長さごとに分割し，分割したそれぞれにおいて重複を削除する．
+\inputGofile[label=util/unique.go]{code/util/unique.go}
+
+\section{ランダムにサンプルを抽出}
+メルセンヌ・ツイスタにより生成した疑似乱数に対応する行数を抽出する．
+\inputGofile[label=util/random.go]{code/util/random.go}
+
+\section{ICN-URLに変換する}
+\inputGofile[label=icn/convert.go]{code/icn/convert.go}
+\inputGofile[label=icn/pointer.go]{code/icn/pointer.go}
+
+\section{ハッシュの計算}
+コード中のhash5--7がハッシュアルゴリズムA--Cに対応する．
+\inputGofile[label=hash/algo.go]{code/hash/algo.go}
+\inputGofile[label=hash/calc.go]{code/hash/calc.go}
+\inputGofile[label=hash/split.go]{code/hash/split.go}
+
+\section{ハッシュの衝突数を数え上げる}
+ハッシュの衝突数を数え上げてCCDFを計算する．
+\inputGofile[label=hash/count.go]{code/hash/count.go}
+
+\section{ハッシュテーブルとポインタテーブルの作成}
+\inputGofile[label=table/split.go]{code/table/split.go}
+\inputGofile[label=table/table.go]{code/table/table.go}
 
 \end{document}
