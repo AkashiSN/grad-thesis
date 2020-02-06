@@ -68,17 +68,15 @@ icn:/<reTLD>/<Root>/<rHostName>/<Path>
 
 \section{ハッシュアルゴリズム}
 まず，ICN-URLを"/"で分割する．それぞれをセクションと呼ぶ．
-そのセクションの文字数が3文字未満の場合はセクションの文字数に応じて３文字にする(パディング)．
+そのセクションの文字数が3文字未満の場合はセクションの文字数に応じて次のように３文字にする(パディング)．
 
 \begin{description}
-  \item[セクションが1文字のとき]
-    ICNの長さとスラッシュの数を掛けたものをuint16型で付加する
-  \item[セクションが2文字のとき]
-    ICNのスラッシュの数をbyte型として付加する
+  \item[セクションが1文字のとき] ICN-URLの長さとスラッシュの数を掛けたものをuint16型で2バイト付加する
+  \item[セクションが2文字のとき] ICN-URLのスラッシュの数をbyte型として1バイト付加する
 \end{description} 
 
 次に，各セクションから前3文字を抜き出して配列headsとする．
-同様に後3文字を抜き出して配列tailsとする．ただしパティングが含まれているセクションはパディングと元の文字との順序を入れ替える．
+同様に後3文字を抜き出して配列tailsとするが，パティングが含まれているセクションはパディングと元の文字との順序を入れ替える．
 
 最後に，先程のheadsとtailsを用いてハッシュ値を求める．
 headsの先頭要素3バイト，tailsの末尾要素3バイト，末尾から3つ目の要素3バイトの各3バイト，計9バイトをそれぞれのバイトごとにXORを計算して3バイトにする．
@@ -94,20 +92,16 @@ ICN-URLを\url{icn:/jp.ac/akashi/www/life/syllabus/a}としたときの具体例
 
 \section{性能評価}
 図\ref{fig:table}のように
-バーゼル大学で公開されている21億件のURLのリスト\cite{icn-names}から重複を取り除いた．
-これは60GBほどのサイズで約8.8億件のURLを含み，全URLリストと呼ぶ．
-各CRでの実際的なURLは10MBほどであるという仮定のうえ，ランダムな10MBを抽出し，解析データとした．
-ここには約14万件のURLが含まれる．
+バーゼル大学で公開されている21億件のURLのリスト\cite{icn-names}から重複を取り除いたものを全URLリストと呼ぶ．
+これは60GBほどのサイズで約8.8億件のURLを含む．
+各CRでの実際的なURLは10MBほどであると仮定し，ランダムな10MB分を抽出し，解析データとした．
+これには約14万件のURLが含まれる．
 この解析データ中の各URLをICN-URLに変換する．
-解析データから同じeTLDごとにハッシュを計算してテーブルを作成し,それをeTLDの頻度順に並べたものをハッシュテーブル②とする.
-ハッシュテーブルの各eTLDの始まりのアドレスをポインターとしてポインターテーブル①に記録する.
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=80mm]{fig/table-crop.pdf}
-  \caption{評価手順}{Analysis procedure．}
-  \label{fig:table}
-\end{figure}
-\begin{table}[h]
+
+解析データから同じeTLDごとにハッシュを計算してテーブルを作成し,それをeTLDの頻度順に並べたものをハッシュテーブル②とする．
+ハッシュテーブルの各eTLDの始まりのアドレスをポインターとしてポインターテーブル①に記録する．
+
+\begin{table}[b]
   \centering
   \caption{解析データ中の上位2件のeTLDの出現確率}{Top 2 of eTLD, URL count and probability in the sampled URLs (147,315)．}
   \label{tab:ratio_of_etld_detail}
@@ -118,6 +112,13 @@ ICN-URLを\url{icn:/jp.ac/akashi/www/life/syllabus/a}としたときの具体例
   net & 8285 & 5.6240 \\\bottomrule
   \end{tabular}
 \end{table}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=80mm]{fig/table-crop.pdf}
+  \caption{評価手順}{Analysis procedure．}
+  \label{fig:table}
+\end{figure}
+
 図 \ref{fig:table}のポインタテーブル①を用いることで，異なるeTLDは区別されるので1つのeTLDに対するハッシュ値の衝突だけが問題となる．
 したがって各eTLDについてだけハッシュ値の衝突率を求めればよい．
 しかし，表 \ref{tab:ratio_of_etld_detail}に示すように，出現確率1位のcomで60\%を占めており，極端に偏っていることがわかる．
