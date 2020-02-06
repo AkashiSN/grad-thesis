@@ -71,7 +71,7 @@ CDN\footnote{Content Delivery Network: 頻繁に使われるWebサイトがあ�
 ICNにおいて情報を保持している者をパブリッシャ(Publisher)，情報の取得要求を出すものをサブスクライバ(Subscriber)と呼ぶ．
 またICNでは各コンテンツ(情報)に対してコンテンツ名(名前)が対応付けられている．
 
-ICNへのアプローチとして様々なが研究がなされているが，現在最も多くの研究者により研究されているNamed Data Networking (NDN)\cite{NDN} 及びその前身であるContent Centric Networking (CCN)\cite{CCN} を代表的なICNアーキテクチャとして述べる．
+ICNへのアプローチとして様々な研究がなされているが，現在最も多くの研究者により研究されているNamed Data Networking (NDN)\cite{NDN} 及びその前身であるContent Centric Networking (CCN)\cite{CCN} を代表的なICNアーキテクチャとして述べる．
 CCNアーキテクチャはパロアルト研究所\footnote{Palo Alto Research Center (PARC) : アメリカ合衆国のカリフォルニア州パロアルトにある研究開発企業}により研究されているICNの先駆となった本格的なアーキテクチャである．
 また，US Future Internet Architectureプログラム\footnote{NSF FUTURE INTERNET ARCHITECTURE PROJECT (http://www.nets-fia.net/)}によって資金提供されたNDNプロジェクトは，CCNアーキテクチャをさらに発展させたものである．
 
@@ -110,7 +110,7 @@ PITエントリに複数のインターフェイスがある場合，DATAパケ�
 PITに一致するエントリがない場合，CRはDATAパケットを重複データとして破棄する．
 NDNでは，DATAパケットはINTERESTパケットによってPITに残された経路に従うため，名前解決とデータルーティングは対称である\cite{A_Survey_of_Information-Centric_Networking_Research}．
 
-\paragraph{ICNの実用化に向けて}
+\section{ICNの実用化に向けた課題}
 ICNにおけるContents Router (CR)は未だに研究段階にありソフトウェアとして参照実装\footnote{Cefore: \url{https://cefore.net/} NICTにより開発されたCCNx準拠のTCP/IP上でCCNパケットをシミュレートするソフトウェアルータ}はあるが，ハードウェアとして実装されたものはない．
 ICNの実用化を行うため，CRのハードウェアによる実装が不可欠である．
 ハードウェア実装に向けた課題として，TCP/IPにおけるIPアドレスの代わりにコンテンツ名を用いて名前解決とルーティングを行うためCRでの処理が複雑であり，各テーブルに必要な記憶容量も増加するという点が挙げられる．
@@ -119,10 +119,15 @@ ICNの実用化を行うため，CRのハードウェアによる実装が不可
 また，ICNにおけるコンテンツ名のハッシュ化という用途では完全に衝突のないハッシュを用いるより，多少の衝突を許容しながらも高速に計算可能なハッシュアルゴリズムが求められる．
 この多少の衝突を許容するために各テーブルにおける新たなデータ構造による検索手法も求められる．
 
-
 \section{本研究の目的}
 本研究では，上記課題を解決するために新たなデータ構造による検索手法と高速で軽量なハッシュアルゴリズムを提案，検証することである．
 コンテンツ名はランダムな文字列ではなくある程度自然言語的な規則があるのでそれを用いることで軽量化を図る．
+
+\section{本論文の構成}
+本論文は本章を含め4章で構成されている．
+第2章では，URLの階層構造とICNのコンテンツ名の関係を述べたのちハッシュアルゴリズムの解析方法について説明する．
+第3章では，性能評価の結果を記述する．
+最後に，第4章において，本論文を通して得られた結果をまとめる．
 
 \begin{figure}
   \centering
@@ -172,13 +177,13 @@ FQDNは"."で区切られた各ラベルの連続であり右端の"."がルー�
 
 Top-Level Domain (TLD)にはcountry code TLD (ccTLD), generic TLD (gTLD), restricted generic TLD (grTLD), sponsored TLD (sTLD)などがありそれぞれICANNにより管理されている\cite{tld}．
 それぞれの例をTable \ref{tab:example_tld}に示す．
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
   \includegraphics[scale=1.4]{fig/fqdn_structure-crop.pdf}
   \caption{Fully Qualified Domain Name (FQDN) structure. FQDN ends with a period. TLD stands for Top-Level Domain, SLD for Second-Level Domain, 3rdLD for 3rd-Level Domain, 4thLD for 4t-Level Domain．}
   \label{fig:fqdn_structure}
 \end{figure}
-\begin{table}[h]
+\begin{table}[t]
   \centering
   \caption{Example of each TLDs．}
   \label{tab:example_tld}
@@ -286,7 +291,7 @@ http://wrestlingabrasil.blogspot.com/
 \url{urls.txt}の前処理として以下の工程を行う．
 このデータには重複が含まれているので重複を削除する．
 これは60GBほどのサイズで約8.8億件のURLを含み，全URLリストと呼ぶ．
-各CRでの実際的なURLは10MBほどであるという仮定のうえ，ランダムな10MBを抽出し，解析データとした．
+各CRでの実際的なURLは10MBほどであるという仮定の下，ランダムな10MBを抽出し，解析データとした．
 ここには約14万件のURLが含まれる．
 この解析データ中の各URLをICN-URLに変換する．
 
@@ -342,17 +347,17 @@ headsの先頭1文字と先程の3バイトを連結したものを4バイトの
 これは，eTLDの頻度の多い順と同じである．
 各行のICN-URLに対して上記の3種類のハッシュアルゴリズムの内のどれかにより順にハッシュ値を求め，ハッシュテーブルを作成する．
 このハッシュテーブルには頻度順の同じeTLDに対応するハッシュ値が連続して並んでいる．
-すなわち，eTLDごとにグループ分けされたハッシュテーブルが得られる(Fig. \ref{fig:table}の①)．
-新たなeTLDのグループの出現する位置のアドレスをポインタと呼び，それとeTLDとの対応関係をポインタテーブルと呼ぶ(Fig. \ref{fig:table}の②)．
+すなわち，eTLDごとにグループ分けされたハッシュテーブルが得られる(Fig. \ref{fig:table}の②)．
+新たなeTLDのグループの出現する位置のアドレスをポインタと呼び，それとeTLDとの対応関係をポインタテーブルと呼ぶ(Fig. \ref{fig:table}の①)．
 
-\begin{figure}[p]
+\begin{figure}[H]
   \centering
   \includegraphics[width=135mm]{fig/hash_2-crop.pdf}
   \caption{Hash algorithm B．}
   \label{fig:hash_B}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
   \centering
   \includegraphics[width=135mm]{fig/hash_3-crop.pdf}
   \caption{Hash algorithm C．}
@@ -364,21 +369,21 @@ headsの先頭1文字と先程の3バイトを連結したものを4バイトの
 
 \subsection{前処理}
 \subsubsection{重複削除}
-入力されたデータの重複を削除する．今回は121GBのデータなのでlinuxのuniqueコマンドでは時間がかかりすぎるため実装した．
+入力されたデータの重複を削除する．今回は121GBのデータなのでlinuxのuniqコマンドでは時間がかかりすぎるため独自に実装した．
 文字数による分割統治法を用いて，分割したデータごとに並行処理を行うことで重複削除の高速化を図った．
-重複削除したら60GB程度になった．
+重複削除することで60GB程度にデータサイズが削減された．．
 \subsubsection{サンプル抽出}
-重複のないデータから10MBをランダムに抽出する機能を実装した．
+重複のないデータから10MB分をランダムに抽出する機能を実装した．
 60GBのデータをメモリ上に展開することはできないので，行番号と先頭からのバイト数のテーブルを作成した．
 これをメモリ上に展開し，乱数により行番号を選択し，対応するファイル位置を求めファイルポインタを移動させてその行を選択しファイルに出力する．
 これを出力したファイルサイズが10MBになるまで繰り返す．
 \subsection{コンテンツ名への変換}
-バッファーに入るだけ読み込んでから並列プロセスに渡して以下の処理をする．
+バッファに入るだけ読み込んでから並列プロセスに渡して以下の処理をする．
 1行読んでURLの構文解析を行いURLの規格に沿っていないものを除外する．
 Public Suffix Listとドメイン名を照合してeTLDとRootとHostNameを抽出する．
 これを定義したICN-URLの形式に合うように組み立てる．
 \subsection{ハッシュテーブルとポインタテーブル生成}
-バッファーに入るだけ読み込んでから並列プロセスに渡して以下の処理をする．
+バッファに入るだけ読み込んでから並列プロセスに渡して以下の処理をする．
 ICN-URLから3種類のいずれかのハッシュアルゴリズムによりハッシュ値を計算する．
 ハッシュ値を順に出力する際に，eTLDと出力バイト数の関係をポインタテーブルとして出力する．
 \subsection{衝突数の解析}
@@ -447,13 +452,15 @@ Fig. \ref{graph:ratio_of_etld_all}からわかるようにごく少数のeTLDに
 そのハッシュテーブルの中で同じハッシュ値を持つICN-URLの数を数え上げて衝突数とする．
 そして同じ衝突数を持つICN-URLの合計数を求める．
 この合計数の累積のICN-URL総数に対する比率を算出する．これを累積分布と呼ぶ．
-累積分布と1との差の絶対値を相補累積分布と呼ぶ(Complementary Cumulative Distribution Function: CCDF)．
+累積分布と1との差の絶対値を相補累積分布(Complementary Cumulative Distribution Function: CCDF)と呼ぶ．
 これをFig. \ref{graph:hash_ccdf_A-C}に示す．
-このグラフではある横軸において値が小さい方がより衝突の割合が少ない．
+このグラフではある横軸において値が小さい方がより衝突の割合が少ないことを示す．
 横軸は同じハッシュ値の数なので1は衝突していないことを意味し，2以上は衝突していることを表す．
 したがって，ハッシュアルゴリズムAが最良であるとわかる．
 4回程度の衝突ではハードウェアで処理可能だが，それ以上になるとソフトウェアで処理しなければならなくなるという仮定を行っている．
 そのため，ハッシュアルゴリズムの評価の基準として4回衝突のところで縦の補助線を引いてある．
+ハッシュアルゴリズムAでは，４回衝突のとき，CCDF$=1.3\times 10^{-2}$であった．
+この確率が十分小さいかどうかは，今後実装するハードウェアの処理速度に依存する．
 \begin{figure}
   \centering
   \includegraphics[scale=0.6]{graph/hash_ccdf/hash_A_C_ccdf-crop.pdf}
@@ -473,8 +480,8 @@ Fig. \ref{graph:etld_hash_ccdf}に各eTLDごとのハッシュアルゴリズム
   \label{graph:etld_hash_ccdf}
 \end{figure}
 
-Fig. \ref{graph:etld_hash_ccdf}よりeTLDが\url{me}のとき衝突しない確率が低くなっていることがわかる．
-\url{formspring.me}というサイトがデータの大半を占めており，\url{icn:/me/formspring/nandaghizzo/q/908453668}のようなICN-URLの形式である．
+Fig. \ref{graph:etld_hash_ccdf}よりeTLDが\url{me}のときだけ衝突しない確率が他と比べ極端に低くなっていることがわかる．
+これは次のように考えられる．eTLDがmeでは，\url{formspring.me}というサイトがデータの大半を占めており，\url{icn:/me/formspring/nandaghizzo/q/908453668}のようなICN-URLの形式である．
 このときハッシュアルゴリズムAを用いると毎回異なるパラメータとなるのは最後の3文字つまり3桁の数字である．
 これは投稿などのIDだと考えられるので連番である可能性が高い．
 このことから1000件に1回は衝突することになり，今回\url{me}の件数は7720件であったため，
@@ -482,7 +489,7 @@ Fig. \ref{graph:etld_hash_ccdf}よりeTLDが\url{me}のとき衝突しない確�
 他のeTLDについてはALL eTLDと近い傾向を示した．
 
 \section{eTLDにRootを加えた場合}
-eTLDのみだと母数が大きいので細分化するために次の3種の規則によりRootをeTLDに追加する．
+eTLDのみだと同じeTLDをもつURLの数が大きいので衝突が発生しやすくなると考えた．そこでこれを細分化するために次の3種の規則によりRootをeTLDに追加する．
 \begin{enumerate}
   \item comのときのRootの出現回数が10のRootをeTLDに加える(Fig. \ref{graph:ratio_of_pointer_all}, \ref{graph:ratio_of_pointer_detail}の赤線)．
   \item comのときのRootの出現回数の多い順の上位256をeTLDに加える(Fig. \ref{graph:ratio_of_pointer_all}の青線)．
@@ -554,12 +561,12 @@ Fig \ref{graph:pointer_hash_ccdf}にeTDLにRootを加えたときと，加えて
 
 \begin{enumerate}
   \item 3通りのハッシュアルゴリズムを提案した．ICN-URLを"/"で分割し，3バイトの文字列を切り出し，
-      そのうちの2--3の文字列どおしのXOR演算から3バイトから4バイトのハッシュ値を生成した．
+      そのうちの2--3の文字列どうしのXOR演算から3バイトから4バイトのハッシュ値を生成した．
       このハッシュ値とICN-URLの対応をハッシュテーブルとして作成し，衝突確率を求めた．
   \item 衝突数を軽減するためにポインタを併用したハッシュ作成アルゴリズムを提案した．
   URLのeTLDの分布を調べることにより，\url{com}が60\%占めていて偏りが大きいことがわかった．
   そのため衝突率が大きくなっていた．
-  \item eTLDにRootを加えることで偏りが大きかった\url{com}の占める割合を24\%に下げることで衝突確率を0.3\%に抑えることができた．
+  \item eTLDにRootを加えることで偏りが大きかった\url{com}の占める割合を24\%に下げることで５回以上衝突する確率を0.3\%に抑えることができた．
 \end{enumerate}
 
 \subsection*{今後の課題}
@@ -573,6 +580,7 @@ Fig \ref{graph:pointer_hash_ccdf}にeTDLにRootを加えたときと，加えて
 
 \chapter*{謝辞}
 本研究を進めるにあたり，ご指導いただいた指導教員の井上一成教授に感謝いたします．
+
 御助言を頂いた共同研究先の国立研究開発法人情報通信研究機構の大岡睦氏に感謝の意を表します．
 
 \bibliography{thesis}
