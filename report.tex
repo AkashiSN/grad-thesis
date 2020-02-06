@@ -23,7 +23,7 @@
 \section{はじめに}
 近年，ネットワーク上を流通するトラフィックは増加の一途を辿っている.
 またInternet of Things (IoT)の普及によりネットワークに参加する機器も増加する．
-それぞれの機器をIPアドレスで管理するネットワークでは破綻が生じるという課題がある．
+そのため，それぞれの機器をIPアドレスで管理するネットワークでは破綻が生じるという課題がある．
 
 本来情報を取得する際，IPアドレスなどを意識する必要はなく，
 もし近くにある通信機器が当該コンテンツ(情報)を持っておりそこから情報を取得できるなら，それはより効率的であり将来の通信量増大にも対応できると考えられる．
@@ -99,7 +99,7 @@ ICN-URLを\url{icn:/jp.ac/akashi/www/life/syllabus/a}としたときの具体例
 各CRでの実際的なURLは10MBほどであるという仮定のうえ，ランダムな10MBを抽出し，解析データとした．
 ここには約14万件のURLが含まれる．
 この解析データ中の各URLをICN-URLに変換する．
-抽出データから同じeTLDごとにハッシュを計算してテーブルを作成し,それをeTLDの頻度順に並べたものをハッシュテーブル②とする.
+解析データから同じeTLDごとにハッシュを計算してテーブルを作成し,それをeTLDの頻度順に並べたものをハッシュテーブル②とする.
 ハッシュテーブルの各eTLDの始まりのアドレスをポインターとしてポインターテーブル①に記録する.
 \begin{figure}[h]
   \centering
@@ -109,7 +109,7 @@ ICN-URLを\url{icn:/jp.ac/akashi/www/life/syllabus/a}としたときの具体例
 \end{figure}
 \begin{table}[h]
   \centering
-  \caption{抽出データ中の上位2件のeTLDの出現確率}{Top 2 of eTLD, URL count and probability in the sampled URLs (147,315)．}
+  \caption{解析データ中の上位2件のeTLDの出現確率}{Top 2 of eTLD, URL count and probability in the sampled URLs (147,315)．}
   \label{tab:ratio_of_etld_detail}
   \begin{tabular}{@{}rrr@{}}
   \toprule
