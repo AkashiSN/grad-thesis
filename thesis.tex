@@ -89,7 +89,7 @@ NDNにおけるコンテンツ名の命名規則は階層構造になってお�
 \paragraph{名前解決とデータルーティング}
 NDNにおいて，Subscriberはコンテンツを取得する際はコンテンツ取得要求であるINTERESTパケットを発行して，PublisherからのDATAパケットの形式で到着するコンテンツを取得する．
 INTEREST/DATAパケットは，それぞれ要求/転送されるコンテンツのコンテンツ名を持つ．
-Fig. \ref{fig:ccn_ndn_routing}に示すように，すべてのパケットはContent Router (CR)によってホップバイホップ(hop by hop)で転送され，
+Fig. \ref{fig:ccn_ndn_routing}に示すように，すべてのパケットはContent Router (CR)によってホップバイホップ(hop by hop)で転送される．
 各CRには3つのデータ構造(Forwarding Information Base (FIB), Pending Interest Table (PIT), Content Store (CS))がある．
 FIBは，INTERESTパケットを適切なデータソースに転送するために使用するインターフェイスとコンテンツ名をマッピングする．
 PITは，保留中のINTERESTパケットが到着した受信インターフェイス，つまり一致するDATAパケットが転送されてきたときに返送するインターフェースとコンテンツ名をマッピングすることでINTERESTパケットを追跡する．

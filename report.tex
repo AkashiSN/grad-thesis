@@ -2,16 +2,16 @@
 % preamble
 % ------------------------------------------------------
 
-\documentclass[twocolumn,9pt]{ujarticle}
+\documentclass[twocolumn]{ujarticle}
 \usepackage[dvipdfmx]{graphicx}
 \usepackage[top=3cm, bottom=2.7cm, left=1.8cm, right=1.8cm]{geometry}
 
 \input{preamble/report}
 
-\title{DNSキャッシュの高速化とURL符号化}
-\author{$西総一朗^{*}$，井上一成(明石高専)}
+\title{URLの情報指向型クラシフィケーション}
+\author{西総一朗$^{*}$，井上一成(明石高専)}
 % english title / author
-\entitle{Accelerate DNS Cache and URL Encoding.}
+\entitle{Information-oriented classification of URLs}
 \enauthor{Soichiro Nishi$^{*}$，Kazunari Inoue (NIT，Akashi Collage)}
 \date{\hfill}
 
@@ -21,17 +21,131 @@
 \thispagestyle{empty}
 
 \section{はじめに}
-近年,ネットワーク上を流通するトラフィックは増加の一途を辿っている.
-従来のインターネットで利用されていたIPアドレスを識別子に用いるユーザとサーバ間のEnd-to-Endな通信を行うネットワークでは,ユーザからの通信要求が全て単一のサーバに集中することから,処理遅延やサーバダウンといった様々な問題を引き起こす\cite{bloom}.
+近年，ネットワーク上を流通するトラフィックは増加の一途を辿っている.
+またInternet of Things (IoT)の普及によりネットワークに参加する機器も増加する．
+それぞれの機器をIPアドレスで管理するネットワークでは破綻が生じるという課題がある．
 
-そこで,このような問題を解決するために研究されている技術の一つとして情報指向型ネットワーク:\ Information-Centric-Networking (ICN) \cite{icn}がある.
-情報指向型ネットワークとは,従来のIPネットワークのようにどのサーバからコンテンツを取得するかというロケーションオリエンテッドな通信ではなく,どのコンテンツを取得するかをコンテンツ名で指定し,コンテンツの発見と転送をコンテンツセントリックな方法で行う手法である.
+本来情報を取得する際，IPアドレスなどを意識する必要はなく，
+もし近くにある通信機器が当該コンテンツ(情報)を持っておりそこから情報を取得できるなら，それはより効率的であり将来の通信量増大にも対応できると考えられる．
+そこで，情報を効率的に取得するために情報指向ネットワーク:\ Information-Centric-Network (ICN)\cite{Networking_Named_Content}というプロトコル体系が提案された\cite{ICN_prototype}．
 
+\section{ICNの課題}
+情報指向ネットワーク(ICN)においてユーザはサーバのIPアドレスではなくコンテンツ名を指定してコンテンツ取得要求を行うプロトコル体系である．
+また，情報を保持している者をパブリッシャ(Publisher)，情報の取得要求を出すものをサブスクライバ(Subscriber)と呼ぶ．
+Subscriberはコンテンツ取得要求であるINTERESTパケットを発行して，PublisherからのDATAパケットによりコンテンツを取得する．
+すべてのパケットはContent Router (CR)によって転送される．
+各CRはルーティングテーブルが存在し，コンテンツ名と宛先インターフェイス名の対応を管理している．
+コンテンツ名の命名規則は階層構造になっており，現在のインターネットで流通している識別子であるUniform-Resource-Locator (URL)に似ている．
+CRではコンテンツ名を既存のハッシュアルゴリズムでハッシュ化してルーティングテーブルに登録しているが，
+このアルゴリズムをハードウェアで実装するには処理が複雑である．
+このことがICNの実現化に向けた大きな課題の一つとなっている．
+
+\section{本研究の目的}
+本研究では，上記課題を解決するために新たなデータ構造による検索手法と高速で軽量なハッシュアルゴリズムを提案，検証することである．
+コンテンツ名はランダムな文字列ではなくある程度自然言語的な規則があるのでそれを用いることで軽量化を図る．
+
+\section{URLの構造}
+現在使用されているURLは図\ref{fig:url_structure}のような構造である.
+URLを分類するためにTop-Level Domain(TLD)を用いる手法がよく使われるが,一つの分類に含まれる範囲が広すぎる.
+そこで,今回提案する手法はeTLD(effective TLD)あるいはPublic Suffix\cite{public_suffix_list}と呼ばれる実質的にTLDとして機能する指標を用いて分類する.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=65mm]{fig/url-structure-crop.pdf}
+  \caption{URLの構造}{URL structure}
+  \label{fig:url_structure}
+\end{figure}
+
+\section{ICNのコンテンツ名}
+ICNにおけるコンテンツ名を本研究では
+\begin{center}
+  \begin{BVerbatim}
+icn:/<reTLD>/<Root>/<rHostName>/<Path>
+  \end{BVerbatim}
+\end{center}
+のように定義し，ICN-URLと呼ぶ．
+\verb|reTLD| (reverse-eTLD)と\verb|rHostName| (reverse-HostName)はそれぞれ\verb|eTLD|と\verb|HostName|を"."を区切りとして逆順に配置したものである．
+すなわち，\verb|eTLD|が\verb|ab.cd.ef|なら\verb|reTLD|は\verb|ef.cd.ab|となる．
+
+\section{ハッシュアルゴリズム}
+まず，ICN-URLを"/"で分割する．それぞれをセクションと呼ぶ．
+そのセクションの文字数が3文字未満の場合はセクションの文字数に応じて３文字にする(パディング)．
+
+\begin{description}
+  \item[セクションが1文字のとき]
+    ICNの長さとスラッシュの数を掛けたものをuint16型で付加する
+  \item[セクションが2文字のとき]
+    ICNのスラッシュの数をbyte型として付加する
+\end{description} 
+
+次に，各セクションから前3文字を抜き出して配列headsとする．
+同様に後3文字を抜き出して配列tailsとする．ただしパティングが含まれているセクションはパディングと元の文字との順序を入れ替える．
+
+最後に，先程のheadsとtailsを用いてハッシュ値を求める．
+headsの先頭要素3バイト，tailsの末尾要素3バイト，末尾から3つ目の要素3バイトの各3バイト，計9バイトをそれぞれのバイトごとにXORを計算して3バイトにする．
+headsの先頭1文字と先程の3バイトを連結したものを4バイトのハッシュ値とする．
+ICN-URLを\url{icn:/jp.ac/akashi/www/life/syllabus/a}としたときの具体例を図 \ref{fig:hash_A}に示す．
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=60mm]{fig/hash_1-crop.pdf}
+  \caption{ハッシュアルゴリズム}{Hash algorithm}
+  \label{fig:hash_A}
+\end{figure}
+
+\section{性能評価}
+図\ref{fig:table}のように
+バーゼル大学で公開されている21億件のURLのリスト\cite{icn-names}から重複を取り除いた．
+これは60GBほどのサイズで約8.8億件のURLを含み，全URLリストと呼ぶ．
+各CRでの実際的なURLは10MBほどであるという仮定のうえ，ランダムな10MBを抽出し，解析データとした．
+ここには約14万件のURLが含まれる．
+この解析データ中の各URLをICN-URLに変換する．
+抽出データから同じeTLDごとにハッシュを計算してテーブルを作成し,それをeTLDの頻度順に並べたものをハッシュテーブル②とする.
+ハッシュテーブルの各eTLDの始まりのアドレスをポインターとしてポインターテーブル①に記録する.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=80mm]{fig/table-crop.pdf}
+  \caption{評価手順}{Analysis procedure．}
+  \label{fig:table}
+\end{figure}
+\begin{table}[h]
+  \centering
+  \caption{抽出データ中の上位2件のeTLDの出現確率}{Top 2 of eTLD, URL count and probability in the sampled URLs (147,315)．}
+  \label{tab:ratio_of_etld_detail}
+  \begin{tabular}{@{}rrr@{}}
+  \toprule
+  \multicolumn{1}{c}{eTLD} & \multicolumn{1}{c}{URL count} & \multicolumn{1}{c}{Probability{[}\%{]}} \\ \midrule
+  com & 89399 & 60.6856 \\
+  net & 8285 & 5.6240 \\\bottomrule
+  \end{tabular}
+\end{table}
+図 \ref{fig:table}のポインタテーブル①を用いることで，異なるeTLDは区別されるので1つのeTLDに対するハッシュ値の衝突だけが問題となる．
+したがって各eTLDについてだけハッシュ値の衝突率を求めればよい．
+しかし，表 \ref{tab:ratio_of_etld_detail}に示すように，出現確率1位のcomで60\%を占めており，極端に偏っていることがわかる．
+そのため，eTLDにRootを加えることを考える．
+
+図 \ref{graph:pointer_hash_ccdf}にeTDLにRootを加えたときと，加えてないときのハッシュ値の衝突率の比較を示す．
+グラフから\url{com}, \url{net}の衝突率がeTLDにRootを加えることで低減されていることがわかる．
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=80mm]{graph/pointer_hash_ccdf/pointer-hash-ccdf-crop.pdf}
+  \caption{eTLDごとのハッシュ値が同じURLの数の相補累積分布}{Complementary cumulative distribution function of same hash value for each eTLD．}
+  \label{graph:pointer_hash_ccdf}
+\end{figure}
+
+\section{まとめ}
+このハッシュアルゴリズムのような3回のXORを行うだけの軽量な計算負荷で求まる4バイトのハッシュ値でも，
+ポインタテーブルを併用することにより5回以上の衝突確率を0.3\%に抑えることができた．
 
 \fontsize{8pt}{12pt}\selectfont
 \begin{thebibliography}{9}
-  \bibitem{icn} 朝枝仁, 松園和久 : コンピュータソフトウェア, Vol.~33, No.~3, pp. 3\_3--3\_15, (2016).
+  \bibitem{Networking_Named_Content} Jacobson, Van et.al. : Networking Named Content (2009).
   \vspace{-1em}
+  \bibitem{ICN_prototype} 朝枝 仁, 松園 和久 : 情報指向ネットワーク技術におけるプロトタイプ実装と評価手法 (2016)
+  \vspace{-1em}
+  \bibitem{public_suffix_list} Mozilla Foundation. : Public Suffix list , Feb. (2020).
+  \vspace{-1em}
+  \bibitem{icn-names} University of Basel. : The content name collection, Oct. (2019).
+
 \end{thebibliography}
 
 \end{document}
