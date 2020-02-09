@@ -1,13 +1,3 @@
-%%%
-% 【指定書式】
-%%%
-% ・A4用紙
-% ・2段組（段間隔5mm程度）
-% ・10.5ptあるいは11pt
-% ・上下25mm，左右20mm程度
-% ・45行，文字数は標準
-%%%
-
 \usepackage{ifthen}
 \usepackage{ifxetex,ifluatex,ifuptex}
 
@@ -19,27 +9,33 @@
   \usepackage{geometry}
 }{\ifthenelse{\boolean{upTeX}}{
   % upLaTeXの時
+  \usepackage[dvipdfmx]{graphicx}
 }{%else (pLaTeXと仮定する)
   % pLaTeX の時
 }}}
 
+\usepackage{booktabs}
+\usepackage{fancyvrb}
+\usepackage{here}
+\usepackage{url}
+
 \setpagelayout*{top=2.5truecm, bottom=2.5truecm, left=2truecm, right=2truecm}
 
-\setlength{\columnsep}{5mm}
+%% Hyphenation setting
+\hyphenpenalty=1000\relax
+\exhyphenpenalty=1000\relax
+\sloppy
+
 \pagestyle{empty}
 
-%%%
-% 【スタイル調整】
-%%%
-% ・タイトルの上につく余白をなくす
-% ・見出しの上下につく余白を0.5行分のサイズにする
-% ・表のキャプションの下につく余白を0.5行分のサイズにする
-% ・脚注番号の前にスターを付ける（e.g. *1）
-% ・箇条書きの行間を詰める
-% ・図のセンタリング
-% ・表のセンタリング
-% ・ハイパーリンク
-%%%
+% 行数, カラム間の幅指定
+\setlength{\columnsep}{5mm}
+\setlength{\textheight}{46\baselineskip}
+
+% 図と本文との余白
+\setlength\textfloatsep{5pt}
+\setlength\intextsep{5pt}
+
 \makeatletter
 \renewcommand{\@maketitle}{
   \begin{center}
@@ -55,25 +51,24 @@
   \par
   \vskip 1.5em
 }
-\makeatother
 
-\makeatletter
-\renewcommand\section{\@startsection {section}{1}{\z@}%
-  {-2.0ex \@plus -1ex \@minus -.2ex}%
-  {1.5ex \@plus.2ex}%
-  {\normalfont\Large\bfseries}%
-}
-\renewcommand\subsection{\@startsection {subsection}{2}{\z@}%
-  {-2.0ex \@plus -1ex \@minus -.2ex}%
-  {1.5ex \@plus.2ex}%
-  {\normalfont\large\bfseries}%
-}
-\renewcommand\subsubsection{\@startsection {subsubsection}{3}{\z@}%
-  {-2.0ex \@plus -1ex \@minus -.2ex}%
-  {1.5ex \@plus.2ex}%
-  {\normalfont\normalsize\bfseries}%
-}
-\makeatother
+\renewcommand\section{\@startsection {section}{1}%
+{\z@}%   インデント大きさ（長さを指定）
+{0.8ex}% 見出しの前のスペース（長さを指定）
+{0.8ex}% 見出しの後のスペース（長さを指定）
+{\normalfont\Large\bfseries}}% 見出しの書式
+
+\renewcommand\subsection{\@startsection {subsection}{1}%
+{\z@}%   インデント大きさ（長さを指定）
+{0.8ex}% 見出しの前のスペース（長さを指定）
+{0.8ex}% 見出しの後のスペース（長さを指定）
+{\normalfont\large\bfseries}}% 見出しの書式
+
+\renewcommand\subsubsection{\@startsection {subsubsection}{1}%
+{\z@}%   インデント大きさ（長さを指定）
+{0.8ex}% 見出しの前のスペース（長さを指定）
+{0.8ex}% 見出しの後のスペース（長さを指定）
+{\normalfont\normalsize\bfseries}}% 見出しの書式
 
 \renewcommand{\thefootnote}{*\arabic{footnote}}
 
@@ -97,3 +92,5 @@
   \centering
   \endoldtable
 }
+
+\makeatother
