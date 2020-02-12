@@ -7,6 +7,11 @@
 \usepackage{mathptmx}
 \usepackage{fancyvrb}
 \usepackage{booktabs}
+\usepackage{tgtermes}
+\usepackage{secdot}
+
+\sectiondot{section}
+\AtBeginDvi{\special{pdf:mapfile uptex-ms.map}}
 
 %% nearly equals
 \newcommand{\near}{\:\approx\:}
@@ -74,7 +79,7 @@
 
 \renewcommand{\@maketitle}{\newpage
 \begin{center}
-{\fontsize{18pt}{28pt}\selectfont \@title  \par} \vskip 28pt % japanese title
+{\fontsize{18pt}{24pt}\selectfont \@title  \par} \vskip 24pt % japanese title
 {\fontsize{12pt}{18pt}\selectfont \@author \par} \vskip 18pt % japanese author
 {\fontsize{9pt}{14pt}\selectfont
    \begin{tabular}[t]{c}
@@ -93,19 +98,7 @@
 {\z@}%   インデント大きさ（長さを指定）
 {0.8ex}% 見出しの前のスペース（長さを指定）
 {0.8ex}% 見出しの後のスペース（長さを指定）
-{\normalfont\fontsize{10pt}{20pt}\selectfont\bfseries}}% 見出しの書式
-
-\renewcommand\subsection{\@startsection {subsection}{1}%
-{\z@}%   インデント大きさ（長さを指定）
-{0.8ex}% 見出しの前のスペース（長さを指定）
-{0.8ex}% 見出しの後のスペース（長さを指定）
-{\normalfont\fontsize{10pt}{20pt}\selectfont\bfseries}}% 見出しの書式
-
-\renewcommand\subsubsection{\@startsection {subsubsection}{1}%
-{\z@}%   インデント大きさ（長さを指定）
-{0.8ex}% 見出しの前のスペース（長さを指定）
-{0.8ex}% 見出しの後のスペース（長さを指定）
-{\normalfont\fontsize{10pt}{20pt}\selectfont\bfseries}}% 見出しの書式
+{\normalfont\fontsize{10pt}{20pt}\gtfamily\sffamily\selectfont}}% 見出しの書式
 
 \renewenvironment{itemize}{%
    \begin{list}{$\bullet$\ \ }% 見出し記号／直後の空白を調節
@@ -126,9 +119,9 @@
 \captionsetup[figure]{format=plain, labelformat=simple, labelsep=quad, font=footnotesize}
 \captionsetup[table]{format=plain, labelformat=simple, labelsep=quad, font=footnotesize}
 \def\fnum@Jfigure{図}
-\def\fnum@Efigure{Fig.}
+\def\fnum@Efigure{Fig\hspace{0.2mm}}
 \def\fnum@Jtable{表}
-\def\fnum@Etable{Table}
+\def\fnum@Etable{Table\hspace{0.2mm}}
 
 \long\def\@emakecaption#1#2{%
 %% \vskip\abovecaptionskip
@@ -157,10 +150,12 @@
     \vspace{0.3em}
     \@makecaption{\csname fnum@J\@captype\endcsname \csname the\@captype\endcsname}{\ignorespaces #3}\par
     \@emakecaption{\csname fnum@E\@captype\endcsname \csname the\@captype\endcsname}{\ignorespaces #4}\par
-    \vspace{0.1em}
+    \vspace{0.2em}
 \endgroup}
 
 % bibliography
+\renewcommand{\@cite}[1]{\textsuperscript{(#1)}}
+\renewcommand{\@biblabel}[1]{(#1)}
 \renewcommand{\refname}{\centering
 \fontsize{8pt}{12pt}\selectfont
 {\rm 文献} \\
