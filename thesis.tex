@@ -66,10 +66,10 @@ CDN\footnote{Content Delivery Network: 頻繁に使われるWebサイトがあ�
 そこで，情報を効率的に取得するために情報指向ネットワーク:\ Information-Centric-Network (ICN)\cite{Networking_Named_Content}というプロトコル体系が提案された\cite{ICN_prototype}．
 
 \section{情報指向ネットワーク}
-情報指向ネットワーク(ICN)においてユーザはサーバのIPアドレスではなくコンテンツ名を指定してコンテンツ取得要求を行い，
-そのコンテンツ要求を受け取った近隣のルータやノードが当該コンテンツを保持していた場合，それらはユーザに対してそのコンテンツを直接転送するプロトコル体系である．
-ICNにおいて情報を保持している者をパブリッシャ(Publisher)，情報の取得要求を出すものをサブスクライバ(Subscriber)と呼ぶ．
-またICNでは各コンテンツ(情報)に対してコンテンツ名(名前)が対応付けられている．
+情報指向ネットワーク(ICN)においてユーザはサーバのIPアドレスではなくコンテンツ名を指定してコンテンツ取得要求を行う．
+そのコンテンツ要求を受け取った近隣のルータやノードが当該コンテンツを保持していた場合，それらはユーザに対してそのコンテンツを直接転送する．
+ICNでは情報を保持している者をパブリッシャ(Publisher)，情報の取得要求を出すものをサブスクライバ(Subscriber)と呼び，
+各コンテンツ(情報)に対してコンテンツ名(名前)が対応付けられている．
 
 ICNへのアプローチとして様々な研究がなされているが，現在最も多くの研究者により研究されているNamed Data Networking (NDN)\cite{NDN} 及びその前身であるContent Centric Networking (CCN)\cite{CCN} を代表的なICNアーキテクチャとして述べる．
 CCNアーキテクチャはパロアルト研究所\footnote{Palo Alto Research Center (PARC) : アメリカ合衆国のカリフォルニア州パロアルトにある研究開発企業}により研究されているICNの先駆となった本格的なアーキテクチャである．
@@ -141,7 +141,6 @@ ICNの実用化を行うため，CRのハードウェアによる実装が不可
 
 \section{URLの構造}
 NDNのコンテンツ名はURLに似ているのでURLの階層構造について調べる．
-
 Uniform-Resource-Locator(URL)はRFC1738\cite{rfc1738}により規格化されており，リソースの位置を特定するために用いられる．
 HTTP URLの構造は
 \begin{center}
@@ -176,7 +175,7 @@ FQDNは"."で区切られた各ラベルの連続であり右端の"."がルー�
 また左端のラベルをHost Nameと呼び，それ以外のラベルをまとめてDomain Nameと呼ぶ．
 
 Top-Level Domain (TLD)にはcountry code TLD (ccTLD), generic TLD (gTLD), restricted generic TLD (grTLD), sponsored TLD (sTLD)などがありそれぞれICANNにより管理されている\cite{tld}．
-それぞれの例をTable \ref{tab:example_tld}に示す．
+それぞれの例をTable \ref{tab:examples_tld}に示す．
 \begin{figure}[t]
   \centering
   \includegraphics[scale=1.4]{fig/fqdn_structure-crop.pdf}
@@ -185,8 +184,8 @@ Top-Level Domain (TLD)にはcountry code TLD (ccTLD), generic TLD (gTLD), restri
 \end{figure}
 \begin{table}[t]
   \centering
-  \caption{Example of each TLDs．}
-  \label{tab:example_tld}
+  \caption{Examples of each TLDs．}
+  \label{tab:examples_tld}
   \begin{tabular}{@{}ccccc@{}}
   \toprule
   ccTLD & gTLD & grTLD & sTLD & eTLD\\ \midrule
@@ -197,7 +196,7 @@ Top-Level Domain (TLD)にはcountry code TLD (ccTLD), generic TLD (gTLD), restri
 \end{table}
 
 \paragraph{Public Suffix (eTLD)}
-各ブラウザによるクッキーの適応可能範囲決定のために"１つのサイト"の単位というものが求められた．それを受けてPublic Suffixというものが提案された\footnote{例えば，\url{example.co.jp}や\url{a.example.co.jp}のPublic Suffixは\url{co.jp}で，\url{example.co.jp}が
+各ブラウザによるクッキーの適応可能範囲決定のために“１つのサイト”の単位というものが求められた．それを受けてPublic Suffixというものが提案された\footnote{例えば，\url{example.co.jp}や\url{a.example.co.jp}のPublic Suffixは\url{co.jp}で，\url{example.co.jp}が
 サイトの単位となる．もし，\url{example.co.jp}がドメインが\url{co.jp}や\url{jp}のクッキーを発行できてしまうと，異なるサイトであるはずの\url{test.co.jp}にも干渉できてしまう．これを防ぐためにクッキーの処理ではPSLを参照するようになっている．}．
 これはeffective TLD (eTLD)とも呼ばれ，TLDや\url{co.jp}などの実質的にTLDのように機能するドメインを指す．
 TLD内のサブドメインの構造はTLDごとに異なるため，機械的にeTLDを決定することはできない．
@@ -274,7 +273,7 @@ http://wrestlingabrasil.blogspot.com/
 ...
 ...
   \end{BVerbatim}
-  \caption{Sample 10 in the urls.txt．}
+  \caption{Samples 10 in the urls.txt．}
   \label{fig:urls_txt_10}
 \end{figure}
 \begin{table}[h]
@@ -297,9 +296,9 @@ http://wrestlingabrasil.blogspot.com/
 
 \subsection{ハッシュアルゴリズム}
 ICN-URLからハッシュ値を求めるアルゴリズムを述べる．
-
 まず，Fig. \ref{fig:hash_separate}に示すようにICN-URLを"/"で分割する．それぞれをセクション(section)と呼ぶ．
-そのセクションの文字数が3文字未満の場合はセクションの文字数に応じて次のように３文字にする(パディング)．
+また，自然言語には連続した特徴が存在し，3-gramを用いることで曖昧性を解消できるという先行研究\cite{IoTLAN}に基づき3文字の抽出を行う．
+その際セクションの文字数が3文字未満の場合はセクションの文字数に応じて次のように３文字にする(パディング)．
 
 \begin{description}
   \item[セクションが1文字のとき] ICN-URLの長さとスラッシュの数を掛けたものをuint16型で2バイト付加する
@@ -568,6 +567,7 @@ Fig \ref{graph:pointer_hash_ccdf}にeTDLにRootを加えたときと，加えて
   URLのeTLDの分布を調べることにより，\url{com}が60\%占めていて偏りが大きいことがわかった．
   そのため衝突率が大きくなっていた．
   \item eTLDにRootを加えることで偏りが大きかった\url{com}の占める割合を24\%に下げることで５回以上衝突する確率を0.3\%に抑えることができた．
+  \item 上記ポインタとハッシュの併用を新たな検索手法として共同研究先に提案を行った．
 \end{enumerate}
 
 \subsection*{今後の課題}
